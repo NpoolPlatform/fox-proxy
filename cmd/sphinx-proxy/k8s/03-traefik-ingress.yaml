@@ -1,0 +1,33 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: fox-proxy-traefik-ingress
+  namespace: kube-system
+  annotations:
+    k8s.kuboard.cn/displayName: fox-proxy-traefik
+    k8s.kuboard.cn/workload: fox-proxy-traefik
+    kubernetes.io/ingress.class: "traefik-internet"
+    traefik.ingress.kubernetes.io/router.entrypoints: web, websecure
+
+spec:
+  rules:
+    - host: proxy.procyon.vip
+      http: &fox_proxy_grpc_rules
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: fox-proxy
+                port:
+                  number: 50001
+    - host: proxy.xpool.top
+      http: *fox_proxy_grpc_rules
+    - host: proxy.npool.top
+      http: *fox_proxy_grpc_rules
+    - host: proxy.ohhash.com
+      http: *fox_proxy_grpc_rules
+    - host: proxy.cryptomore.io
+      http: *fox_proxy_grpc_rules
+    - host: proxy.xhash.ai
+      http: *fox_proxy_grpc_rules

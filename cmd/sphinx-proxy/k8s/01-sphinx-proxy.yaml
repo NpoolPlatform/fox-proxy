@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fox-proxy
+  namespace: kube-system
+  annotations:
+    "sidecar.jaegertracing.io/inject": "true"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fox-proxy
+  template:
+    metadata:
+      labels:
+        app: fox-proxy
+    spec:
+      containers:
+        - name: fox-proxy
+          image: uhub.service.ucloud.cn/entropypool/fox-proxy:latest
+          imagePullPolicy: Always
+          env:
+            - name: ENV_ENVIRONMENT_TARGET
+              valueFrom:
+                configMapKeyRef:
+                  name: system-environment
+                  key: environment.target
+            - name: ENV_CONSUL_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: system-environment
+                  key: environment.consul_host
+            - name: ENV_CONSUL_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: system-environment
+                  key: environment.consul_port
+            - name: ENV_CLUSTER_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fox-proxy-http
+  namespace: kube-system
+
+spec:
+  ports:
+    - name: http
+      port: 50000
+  selector:
+    app: fox-proxy
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fox-proxy
+  namespace: kube-system
+  annotations:
+    traefik.ingress.kubernetes.io/service.serversscheme: h2c
+
+spec:
+  ports:
+    - name: grpc
+      port: 50001
+  selector:
+    app: fox-proxy

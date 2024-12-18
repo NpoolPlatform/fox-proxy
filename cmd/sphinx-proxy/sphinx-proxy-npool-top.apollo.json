@@ -1,0 +1,9 @@
+{
+	"appId": "89089012783789789719823798127398",
+	"cluster": "development",
+	"namespaceName": "fox-proxy-npool-top",
+	"releaseKey": "20241205075547-6475fa431bf4440f",
+	"configurations": {
+		"database_name": "fox_proxy"
+	}
+}
