@@ -1,10 +1,11 @@
-package deserver
+package test
 
 import (
 	"context"
 	"encoding/json"
 	"testing"
 
+	"github.com/NpoolPlatform/fox-proxy/pkg/deserver"
 	"github.com/NpoolPlatform/message/npool/foxproxy"
 	"github.com/stretchr/testify/assert"
 )
@@ -25,7 +26,7 @@ func TestDEHandlerMGR(t *testing.T) {
 		return &B{Msg: "cccc" + in.Msg, num: 122}, nil, nil
 	}
 
-	mgr := GetDEHandlerMGR()
+	mgr := deserver.GetDEHandlerMGR()
 	mgr.RegisterDEHandler(
 		foxproxy.MsgType_MsgTypeUpdateTx,
 		new(A),

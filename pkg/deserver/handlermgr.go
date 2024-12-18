@@ -27,8 +27,29 @@ func GetDEHandlerMGR() *DEHandlerMGR {
 		hmgr = &DEHandlerMGR{
 			DEHandlers: make(map[foxproxy.MsgType]*DEHandler),
 		}
+		hmgr.registerDefaultDEHandler()
 	}
 	return hmgr
+}
+
+func (mgr *DEHandlerMGR) registerDefaultDEHandler() {
+	echoHandler := DEHandler{
+		MsgType: foxproxy.MsgType_MsgTypeEcho,
+		Handler: func(data *foxproxy.DataElement) error {
+			return GetDEServerMGR().SendMsgWithConnID(
+				data.MsgType,
+				data.ConnectID,
+				&data.MsgID,
+				&MsgInfo{
+					Payload:    data.Payload,
+					StatusCode: &data.StatusCode,
+					StatusMsg:  data.StatusMsg,
+				},
+				nil,
+			)
+		},
+	}
+	mgr.DEHandlers[echoHandler.MsgType] = &echoHandler
 }
 
 func (mgr *DEHandlerMGR) RegisterDEHandler(
@@ -40,6 +61,7 @@ func (mgr *DEHandlerMGR) RegisterDEHandler(
 		MsgType: msgType,
 		Handler: func(data *foxproxy.DataElement) error {
 			outPayload, statusCode, err := func(data *foxproxy.DataElement, in interface{}) ([]byte, *foxproxy.StatusCode, error) {
+
 				inData := utils.Copy(in)
 				err := json.Unmarshal(data.Payload, inData)
 				if err != nil {

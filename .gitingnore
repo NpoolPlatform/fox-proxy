@@ -1,6 +1,0 @@
-/output
-/bin
-tmp
-*.json
-.apollo-base-config
-*.log
