@@ -177,4 +177,11 @@ func TestDEServerMGR(t *testing.T) {
 	assert.Equal(t, dataEle.Payload, payload)
 	assert.Equal(t, dataEle.MsgID, msgID)
 
+	mgr.CloseAll()
+	infos = mgr.GetClientInfos()
+	assert.Equal(t, 0, len(infos))
+
+	dataEle, err = cli.Recv()
+	assert.NotNil(t, err)
+	assert.Nil(t, dataEle)
 }
