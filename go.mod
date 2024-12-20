@@ -17,10 +17,6 @@ require (
 	google.golang.org/protobuf v1.30.0
 )
 
-replace github.com/NpoolPlatform/go-service-framework => ../go-service-framework
-
-replace github.com/NpoolPlatform/message => ../message
-
 require (
 	ariga.io/atlas v0.10.0 // indirect
 	github.com/Shonminh/apollo-client v0.4.0 // indirect
