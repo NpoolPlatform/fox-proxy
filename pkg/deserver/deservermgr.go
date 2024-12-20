@@ -12,6 +12,7 @@ import (
 	"github.com/google/uuid"
 )
 
+//nolint:revive
 type DEServerMGR struct {
 	coinInfos   map[string]*foxproxy.CoinInfo
 	connInfos   map[string]map[foxproxy.ClientType][]*DEServer
@@ -102,7 +103,7 @@ func (mgr *DEServerMGR) SendMsg(
 	msgID *string,
 	connID *string,
 	msg *MsgInfo,
-	recvChannel *chan MsgInfo,
+	recvChannel chan MsgInfo,
 ) error {
 	if _, ok := mgr.connInfos[name]; !ok {
 		return fmt.Errorf("cannot find any sider,for %v", name)
@@ -137,7 +138,7 @@ func (mgr *DEServerMGR) SendMsgWithConnID(
 	connID string,
 	msgID *string,
 	msg *MsgInfo,
-	recvChannel *chan MsgInfo,
+	recvChannel chan MsgInfo,
 ) error {
 	var conn *DEServer
 	for _, _conn := range mgr.connections {
@@ -160,7 +161,7 @@ func (mgr *DEServerMGR) sendMsg(
 	msgID *string,
 	msg *MsgInfo,
 	conn *DEServer,
-	recvChannel *chan MsgInfo,
+	recvChannel chan MsgInfo,
 ) error {
 	if conn == nil {
 		return fmt.Errorf("connection is nil")
@@ -175,7 +176,7 @@ func (mgr *DEServerMGR) sendMsg(
 		msgID = &_msgID
 	}
 	if recvChannel != nil {
-		mgr.recvChannel.Store(*msgID, *recvChannel)
+		mgr.recvChannel.Store(*msgID, recvChannel)
 	}
 
 	if msg.StatusCode == nil {
@@ -192,7 +193,7 @@ func (mgr *DEServerMGR) sendMsg(
 	})
 }
 
-func (mgr *DEServerMGR) SendAndRecv(ctx context.Context, name string, clientType foxproxy.ClientType, msgType foxproxy.MsgType, req interface{}, resp interface{}) (*foxproxy.StatusCode, error) {
+func (mgr *DEServerMGR) SendAndRecv(ctx context.Context, name string, clientType foxproxy.ClientType, msgType foxproxy.MsgType, req, resp interface{}) (*foxproxy.StatusCode, error) {
 	inPayload, err := json.Marshal(req)
 	if err != nil {
 		return foxproxy.StatusCode_StatusCodeMarshalErr.Enum(), err
@@ -201,7 +202,7 @@ func (mgr *DEServerMGR) SendAndRecv(ctx context.Context, name string, clientType
 	recvChannel := make(chan MsgInfo)
 	defer close(recvChannel)
 
-	err = mgr.SendMsg(name, clientType, msgType, nil, nil, &MsgInfo{Payload: inPayload}, &recvChannel)
+	err = mgr.SendMsg(name, clientType, msgType, nil, nil, &MsgInfo{Payload: inPayload}, recvChannel)
 	if err != nil {
 		return foxproxy.StatusCode_StatusCodeFailed.Enum(), err
 	}

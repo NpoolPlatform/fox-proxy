@@ -43,22 +43,30 @@ func makeCA(subject *pkix.Name) (*x509.Certificate, *rsa.PrivateKey, error) {
 
 	// Create the CA PEM files
 	caPEM := new(bytes.Buffer)
-	pem.Encode(caPEM, &pem.Block{
+	err = pem.Encode(caPEM, &pem.Block{
 		Type:  "CERTIFICATE",
 		Bytes: caBytes,
 	})
+	if err != nil {
+		log.Printf("Create the CA Certificate error: %v\n", err)
+		return nil, nil, err
+	}
 
-	if err := os.WriteFile(path+"ca.crt", caPEM.Bytes(), 0644); err != nil {
+	if err := os.WriteFile(path+"ca.crt", caPEM.Bytes(), 0o0644); err != nil {
 		log.Printf("Write the CA certificate file error: %v\n", err)
 		return nil, nil, err
 	}
 
 	caPrivKeyPEM := new(bytes.Buffer)
-	pem.Encode(caPrivKeyPEM, &pem.Block{
+	err = pem.Encode(caPrivKeyPEM, &pem.Block{
 		Type:  "RSA PRIVATE KEY",
 		Bytes: x509.MarshalPKCS1PrivateKey(caKey),
 	})
-	if err := os.WriteFile(path+"ca.key", caPEM.Bytes(), 0644); err != nil {
+	if err != nil {
+		log.Printf("Create the CA Certificate error: %v\n", err)
+		return nil, nil, err
+	}
+	if err := os.WriteFile(path+"ca.key", caPEM.Bytes(), 0o0644); err != nil {
 		log.Printf("Write the CA certificate file error: %v\n", err)
 		return nil, nil, err
 	}
@@ -69,7 +77,7 @@ func makeCert(caCert *x509.Certificate, caKey *rsa.PrivateKey, subject *pkix.Nam
 	cert := &x509.Certificate{
 		SerialNumber: big.NewInt(1658),
 		Subject:      *subject,
-		//IPAddresses:  []net.IP{net.IPv4(127, 0, 0, 1), net.IPv6loopback},
+		// IPAddresses:  []net.IP{net.IPv4(127, 0, 0, 1), net.IPv6loopback},
 		DNSNames:     []string{"localhost"},
 		NotBefore:    time.Now(),
 		NotAfter:     time.Now().AddDate(10, 0, 0),
@@ -90,21 +98,29 @@ func makeCert(caCert *x509.Certificate, caKey *rsa.PrivateKey, subject *pkix.Nam
 	}
 
 	certPEM := new(bytes.Buffer)
-	pem.Encode(certPEM, &pem.Block{
+	err = pem.Encode(certPEM, &pem.Block{
 		Type:  "CERTIFICATE",
 		Bytes: certBytes,
 	})
-	if err := os.WriteFile(path+name+".crt", certPEM.Bytes(), 0644); err != nil {
+	if err != nil {
+		log.Printf("Create the Certificate error: %v\n", err)
+		return err
+	}
+	if err := os.WriteFile(path+name+".crt", certPEM.Bytes(), 0o0644); err != nil {
 		log.Printf("Write the CA certificate file error: %v\n", err)
 		return err
 	}
 
 	certKeyPEM := new(bytes.Buffer)
-	pem.Encode(certKeyPEM, &pem.Block{
+	err = pem.Encode(certKeyPEM, &pem.Block{
 		Type:  "RSA PRIVATE KEY",
 		Bytes: x509.MarshalPKCS1PrivateKey(certKey),
 	})
-	if err := os.WriteFile(path+name+".key", certKeyPEM.Bytes(), 0644); err != nil {
+	if err != nil {
+		log.Printf("Create the Certificate error: %v\n", err)
+		return err
+	}
+	if err := os.WriteFile(path+name+".key", certKeyPEM.Bytes(), 0o0644); err != nil {
 		log.Printf("Write the CA certificate file error: %v\n", err)
 		return err
 	}
@@ -151,5 +167,4 @@ func main() {
 		log.Fatal("make Client B Certificate error!")
 	}
 	log.Println("Create and Sign the Client B certificate successfully.")
-
 }

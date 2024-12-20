@@ -8,7 +8,6 @@ import (
 
 	coincli "github.com/NpoolPlatform/chain-middleware/pkg/client/coin"
 	basetypes "github.com/NpoolPlatform/message/npool/basetypes/v1"
-	"github.com/NpoolPlatform/message/npool/chain/mw/v1/coin"
 	coinpb "github.com/NpoolPlatform/message/npool/chain/mw/v1/coin"
 	"github.com/NpoolPlatform/message/npool/foxproxy"
 )
@@ -25,7 +24,7 @@ func RegisterCoin(ctx context.Context, in *foxproxy.RegisterCoinInfo) (bool, err
 	}
 
 	chainType := in.ChainType.String()
-	_, err := coincli.CreateCoin(ctx, &coin.CoinReq{
+	_, err := coincli.CreateCoin(ctx, &coinpb.CoinReq{
 		Name:                &in.Name,
 		Unit:                &in.Unit,
 		ENV:                 &in.ENV,

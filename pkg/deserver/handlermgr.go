@@ -61,7 +61,6 @@ func (mgr *DEHandlerMGR) RegisterDEHandler(
 		MsgType: msgType,
 		Handler: func(data *foxproxy.DataElement) error {
 			outPayload, statusCode, err := func(data *foxproxy.DataElement, in interface{}) ([]byte, *foxproxy.StatusCode, error) {
-
 				inData := utils.Copy(in)
 				err := json.Unmarshal(data.Payload, inData)
 				if err != nil {

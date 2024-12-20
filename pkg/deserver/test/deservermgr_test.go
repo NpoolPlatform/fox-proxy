@@ -75,7 +75,7 @@ func MockClient(ctx context.Context, grpcPort int) foxproxy.FoxProxyStream_DEStr
 
 // for test
 func RegisterDEClient(
-	stream foxproxy.FoxProxyStream_DEStreamClient,
+	client foxproxy.FoxProxyStream_DEStreamClient,
 	clientType foxproxy.ClientType,
 	position string,
 	infos []*foxproxy.CoinInfo,
@@ -101,7 +101,7 @@ func RegisterDEClient(
 			return wlog.WrapError(err)
 		}
 
-		err = stream.Send(&foxproxy.DataElement{
+		err = client.Send(&foxproxy.DataElement{
 			ConnectID:  connID,
 			MsgID:      msgID,
 			Payload:    payload,
@@ -111,7 +111,7 @@ func RegisterDEClient(
 			return wlog.WrapError(err)
 		}
 
-		data, err := stream.Recv()
+		data, err := client.Recv()
 		if err != nil {
 			return wlog.WrapError(err)
 		}
@@ -125,7 +125,10 @@ func RegisterDEClient(
 }
 
 func TestDEServerMGR(t *testing.T) {
-	logger.Init(logger.DebugLevel, "./a.log")
+	err := logger.Init(logger.DebugLevel, "./a.log")
+	if !assert.Nil(t, err) {
+		return
+	}
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	go MockOnServer(ctx, grpcPort)
@@ -144,7 +147,7 @@ func TestDEServerMGR(t *testing.T) {
 		Payload:    []byte("payload"),
 		StatusCode: foxproxy.StatusCode_StatusCodeMarshalErr.Enum(),
 	}
-	err := mgr.SendMsg(clientCoinInfos[0].Name, clientType, foxproxy.MsgType_MsgTypeDefault, nil, nil, &msgInfo, nil)
+	err = mgr.SendMsg(clientCoinInfos[0].Name, clientType, foxproxy.MsgType_MsgTypeDefault, nil, nil, &msgInfo, nil)
 	if !assert.Nil(t, err) {
 		return
 	}
