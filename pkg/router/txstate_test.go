@@ -10,8 +10,8 @@ import (
 func TestTxStateRouter(t *testing.T) {
 	txR := &TxStateRouter{}
 	txSteops1 := TxStateSteps{
-		{TxState: foxproxy.TransactionState_TransactionStatePrepare, ClientType: foxproxy.ClientType_ClientTypeSign},
-		{TxState: foxproxy.TransactionState_TransactionStateWait, ClientType: foxproxy.ClientType_ClientTypePlugin},
+		{TxState: foxproxy.TransactionState_TransactionStatePrepare, ClientType: foxproxy.ClientType_ClientTypePlugin},
+		{TxState: foxproxy.TransactionState_TransactionStateBroadcast, ClientType: foxproxy.ClientType_ClientTypePlugin},
 	}
 	err := txR.RegisterRouter(txSteops1, foxproxy.ChainType_Aleo.Enum(), foxproxy.CoinType_CoinTypealeo.Enum())
 	assert.Nil(t, err)
@@ -82,7 +82,7 @@ func TestTxStateRouter(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, txSteops3, ret)
 
-	txStateStep, err := ret.GetNextStep(foxproxy.TransactionState_TransactionStateWait.Enum())
+	txStateStep, err := ret.GetNextStep(foxproxy.TransactionState_TransactionStateGetViewKey.Enum())
 	assert.NotNil(t, err)
 	assert.Nil(t, txStateStep)
 

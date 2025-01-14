@@ -20,14 +20,10 @@ type Transaction struct {
 	EntID uuid.UUID `json:"ent_id,omitempty"`
 	// CoinType holds the value of the "coin_type" field.
 	CoinType int32 `json:"coin_type,omitempty"`
-	// --will remove
-	Nonce uint64 `json:"nonce,omitempty"`
-	// --will remove
-	TransactionType int8 `json:"transaction_type,omitempty"`
-	// --will remove
-	RecentBhash string `json:"recent_bhash,omitempty"`
-	// --will remove
-	TxData []byte `json:"tx_data,omitempty"`
+	// ChainType holds the value of the "chain_type" field.
+	ChainType int32 `json:"chain_type,omitempty"`
+	// ClientType holds the value of the "client_type" field.
+	ClientType int32 `json:"client_type,omitempty"`
 	// TransactionID holds the value of the "transaction_id" field.
 	TransactionID string `json:"transaction_id,omitempty"`
 	// Cid holds the value of the "cid" field.
@@ -47,7 +43,9 @@ type Transaction struct {
 	// save nonce or sign info
 	Payload []byte `json:"payload,omitempty"`
 	// State holds the value of the "state" field.
-	State uint8 `json:"state,omitempty"`
+	State int32 `json:"state,omitempty"`
+	// LockTime holds the value of the "lock_time" field.
+	LockTime uint32 `json:"lock_time,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
 	CreatedAt uint32 `json:"created_at,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
@@ -61,11 +59,11 @@ func (*Transaction) scanValues(columns []string) ([]interface{}, error) {
 	values := make([]interface{}, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case transaction.FieldTxData, transaction.FieldPayload:
+		case transaction.FieldPayload:
 			values[i] = new([]byte)
-		case transaction.FieldID, transaction.FieldCoinType, transaction.FieldNonce, transaction.FieldTransactionType, transaction.FieldExitCode, transaction.FieldAmount, transaction.FieldState, transaction.FieldCreatedAt, transaction.FieldUpdatedAt, transaction.FieldDeletedAt:
+		case transaction.FieldID, transaction.FieldCoinType, transaction.FieldChainType, transaction.FieldClientType, transaction.FieldExitCode, transaction.FieldAmount, transaction.FieldState, transaction.FieldLockTime, transaction.FieldCreatedAt, transaction.FieldUpdatedAt, transaction.FieldDeletedAt:
 			values[i] = new(sql.NullInt64)
-		case transaction.FieldRecentBhash, transaction.FieldTransactionID, transaction.FieldCid, transaction.FieldName, transaction.FieldFrom, transaction.FieldTo, transaction.FieldMemo:
+		case transaction.FieldTransactionID, transaction.FieldCid, transaction.FieldName, transaction.FieldFrom, transaction.FieldTo, transaction.FieldMemo:
 			values[i] = new(sql.NullString)
 		case transaction.FieldEntID:
 			values[i] = new(uuid.UUID)
@@ -102,29 +100,17 @@ func (t *Transaction) assignValues(columns []string, values []interface{}) error
 			} else if value.Valid {
 				t.CoinType = int32(value.Int64)
 			}
-		case transaction.FieldNonce:
+		case transaction.FieldChainType:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field nonce", values[i])
+				return fmt.Errorf("unexpected type %T for field chain_type", values[i])
 			} else if value.Valid {
-				t.Nonce = uint64(value.Int64)
+				t.ChainType = int32(value.Int64)
 			}
-		case transaction.FieldTransactionType:
+		case transaction.FieldClientType:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field transaction_type", values[i])
+				return fmt.Errorf("unexpected type %T for field client_type", values[i])
 			} else if value.Valid {
-				t.TransactionType = int8(value.Int64)
-			}
-		case transaction.FieldRecentBhash:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field recent_bhash", values[i])
-			} else if value.Valid {
-				t.RecentBhash = value.String
-			}
-		case transaction.FieldTxData:
-			if value, ok := values[i].(*[]byte); !ok {
-				return fmt.Errorf("unexpected type %T for field tx_data", values[i])
-			} else if value != nil {
-				t.TxData = *value
+				t.ClientType = int32(value.Int64)
 			}
 		case transaction.FieldTransactionID:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -184,7 +170,13 @@ func (t *Transaction) assignValues(columns []string, values []interface{}) error
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field state", values[i])
 			} else if value.Valid {
-				t.State = uint8(value.Int64)
+				t.State = int32(value.Int64)
+			}
+		case transaction.FieldLockTime:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field lock_time", values[i])
+			} else if value.Valid {
+				t.LockTime = uint32(value.Int64)
 			}
 		case transaction.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -238,17 +230,11 @@ func (t *Transaction) String() string {
 	builder.WriteString("coin_type=")
 	builder.WriteString(fmt.Sprintf("%v", t.CoinType))
 	builder.WriteString(", ")
-	builder.WriteString("nonce=")
-	builder.WriteString(fmt.Sprintf("%v", t.Nonce))
+	builder.WriteString("chain_type=")
+	builder.WriteString(fmt.Sprintf("%v", t.ChainType))
 	builder.WriteString(", ")
-	builder.WriteString("transaction_type=")
-	builder.WriteString(fmt.Sprintf("%v", t.TransactionType))
-	builder.WriteString(", ")
-	builder.WriteString("recent_bhash=")
-	builder.WriteString(t.RecentBhash)
-	builder.WriteString(", ")
-	builder.WriteString("tx_data=")
-	builder.WriteString(fmt.Sprintf("%v", t.TxData))
+	builder.WriteString("client_type=")
+	builder.WriteString(fmt.Sprintf("%v", t.ClientType))
 	builder.WriteString(", ")
 	builder.WriteString("transaction_id=")
 	builder.WriteString(t.TransactionID)
@@ -279,6 +265,9 @@ func (t *Transaction) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("state=")
 	builder.WriteString(fmt.Sprintf("%v", t.State))
+	builder.WriteString(", ")
+	builder.WriteString("lock_time=")
+	builder.WriteString(fmt.Sprintf("%v", t.LockTime))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
 	builder.WriteString(fmt.Sprintf("%v", t.CreatedAt))

@@ -65,72 +65,68 @@ func init() {
 	transactionDescCoinType := transactionFields[0].Descriptor()
 	// transaction.DefaultCoinType holds the default value on creation for the coin_type field.
 	transaction.DefaultCoinType = transactionDescCoinType.Default.(int32)
-	// transactionDescNonce is the schema descriptor for nonce field.
-	transactionDescNonce := transactionFields[1].Descriptor()
-	// transaction.DefaultNonce holds the default value on creation for the nonce field.
-	transaction.DefaultNonce = transactionDescNonce.Default.(uint64)
-	// transactionDescTransactionType is the schema descriptor for transaction_type field.
-	transactionDescTransactionType := transactionFields[2].Descriptor()
-	// transaction.DefaultTransactionType holds the default value on creation for the transaction_type field.
-	transaction.DefaultTransactionType = transactionDescTransactionType.Default.(int8)
-	// transactionDescRecentBhash is the schema descriptor for recent_bhash field.
-	transactionDescRecentBhash := transactionFields[3].Descriptor()
-	// transaction.DefaultRecentBhash holds the default value on creation for the recent_bhash field.
-	transaction.DefaultRecentBhash = transactionDescRecentBhash.Default.(string)
-	// transactionDescTxData is the schema descriptor for tx_data field.
-	transactionDescTxData := transactionFields[4].Descriptor()
-	// transaction.DefaultTxData holds the default value on creation for the tx_data field.
-	transaction.DefaultTxData = transactionDescTxData.Default.([]byte)
+	// transactionDescChainType is the schema descriptor for chain_type field.
+	transactionDescChainType := transactionFields[1].Descriptor()
+	// transaction.DefaultChainType holds the default value on creation for the chain_type field.
+	transaction.DefaultChainType = transactionDescChainType.Default.(int32)
+	// transactionDescClientType is the schema descriptor for client_type field.
+	transactionDescClientType := transactionFields[2].Descriptor()
+	// transaction.DefaultClientType holds the default value on creation for the client_type field.
+	transaction.DefaultClientType = transactionDescClientType.Default.(int32)
 	// transactionDescCid is the schema descriptor for cid field.
-	transactionDescCid := transactionFields[6].Descriptor()
+	transactionDescCid := transactionFields[4].Descriptor()
 	// transaction.DefaultCid holds the default value on creation for the cid field.
 	transaction.DefaultCid = transactionDescCid.Default.(string)
 	// transactionDescExitCode is the schema descriptor for exit_code field.
-	transactionDescExitCode := transactionFields[7].Descriptor()
+	transactionDescExitCode := transactionFields[5].Descriptor()
 	// transaction.DefaultExitCode holds the default value on creation for the exit_code field.
 	transaction.DefaultExitCode = transactionDescExitCode.Default.(int64)
 	// transactionDescName is the schema descriptor for name field.
-	transactionDescName := transactionFields[8].Descriptor()
+	transactionDescName := transactionFields[6].Descriptor()
 	// transaction.DefaultName holds the default value on creation for the name field.
 	transaction.DefaultName = transactionDescName.Default.(string)
 	// transactionDescFrom is the schema descriptor for from field.
-	transactionDescFrom := transactionFields[9].Descriptor()
+	transactionDescFrom := transactionFields[7].Descriptor()
 	// transaction.DefaultFrom holds the default value on creation for the from field.
 	transaction.DefaultFrom = transactionDescFrom.Default.(string)
 	// transactionDescTo is the schema descriptor for to field.
-	transactionDescTo := transactionFields[10].Descriptor()
+	transactionDescTo := transactionFields[8].Descriptor()
 	// transaction.DefaultTo holds the default value on creation for the to field.
 	transaction.DefaultTo = transactionDescTo.Default.(string)
 	// transactionDescMemo is the schema descriptor for memo field.
-	transactionDescMemo := transactionFields[11].Descriptor()
+	transactionDescMemo := transactionFields[9].Descriptor()
 	// transaction.DefaultMemo holds the default value on creation for the memo field.
 	transaction.DefaultMemo = transactionDescMemo.Default.(string)
 	// transactionDescAmount is the schema descriptor for amount field.
-	transactionDescAmount := transactionFields[12].Descriptor()
+	transactionDescAmount := transactionFields[10].Descriptor()
 	// transaction.DefaultAmount holds the default value on creation for the amount field.
 	transaction.DefaultAmount = transactionDescAmount.Default.(uint64)
 	// transactionDescPayload is the schema descriptor for payload field.
-	transactionDescPayload := transactionFields[13].Descriptor()
+	transactionDescPayload := transactionFields[11].Descriptor()
 	// transaction.DefaultPayload holds the default value on creation for the payload field.
 	transaction.DefaultPayload = transactionDescPayload.Default.([]byte)
 	// transaction.PayloadValidator is a validator for the "payload" field. It is called by the builders before save.
 	transaction.PayloadValidator = transactionDescPayload.Validators[0].(func([]byte) error)
 	// transactionDescState is the schema descriptor for state field.
-	transactionDescState := transactionFields[14].Descriptor()
+	transactionDescState := transactionFields[12].Descriptor()
 	// transaction.DefaultState holds the default value on creation for the state field.
-	transaction.DefaultState = transactionDescState.Default.(uint8)
+	transaction.DefaultState = transactionDescState.Default.(int32)
+	// transactionDescLockTime is the schema descriptor for lock_time field.
+	transactionDescLockTime := transactionFields[13].Descriptor()
+	// transaction.DefaultLockTime holds the default value on creation for the lock_time field.
+	transaction.DefaultLockTime = transactionDescLockTime.Default.(uint32)
 	// transactionDescCreatedAt is the schema descriptor for created_at field.
-	transactionDescCreatedAt := transactionFields[15].Descriptor()
+	transactionDescCreatedAt := transactionFields[14].Descriptor()
 	// transaction.DefaultCreatedAt holds the default value on creation for the created_at field.
 	transaction.DefaultCreatedAt = transactionDescCreatedAt.Default.(func() uint32)
 	// transactionDescUpdatedAt is the schema descriptor for updated_at field.
-	transactionDescUpdatedAt := transactionFields[16].Descriptor()
+	transactionDescUpdatedAt := transactionFields[15].Descriptor()
 	// transaction.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	transaction.DefaultUpdatedAt = transactionDescUpdatedAt.Default.(func() uint32)
 	// transaction.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	transaction.UpdateDefaultUpdatedAt = transactionDescUpdatedAt.UpdateDefault.(func() uint32)
 	// transactionDescDeletedAt is the schema descriptor for deleted_at field.
-	transactionDescDeletedAt := transactionFields[17].Descriptor()
+	transactionDescDeletedAt := transactionFields[16].Descriptor()
 	// transaction.DefaultDeletedAt holds the default value on creation for the deleted_at field.
 	transaction.DefaultDeletedAt = transactionDescDeletedAt.Default.(func() uint32)
 }

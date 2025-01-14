@@ -21,4 +21,20 @@ func init() {
 	mtRouter.RegisterRouter(MsgTypeSteps{
 		{foxproxy.MsgType_MsgTypeGetEstimateGas, foxproxy.ClientType_ClientTypePlugin},
 	}, foxproxy.MsgType_MsgTypeGetEstimateGas, nil, nil)
+
+	txsRouter := GetTxStateRouter()
+	txsRouter.RegisterRouter(TxStateSteps{
+		{foxproxy.TransactionState_TransactionStatePrepare, foxproxy.ClientType_ClientTypePlugin},
+		{foxproxy.TransactionState_TransactionStateSign, foxproxy.ClientType_ClientTypeSign},
+		{foxproxy.TransactionState_TransactionStateBroadcast, foxproxy.ClientType_ClientTypePlugin},
+		{foxproxy.TransactionState_TransactionStateSync, foxproxy.ClientType_ClientTypePlugin},
+	}, nil, nil)
+
+	txsRouter.RegisterRouter(TxStateSteps{
+		{foxproxy.TransactionState_TransactionStateGetViewKey, foxproxy.ClientType_ClientTypeSign},
+		{foxproxy.TransactionState_TransactionStatePrepare, foxproxy.ClientType_ClientTypePlugin},
+		{foxproxy.TransactionState_TransactionStateSign, foxproxy.ClientType_ClientTypeSign},
+		{foxproxy.TransactionState_TransactionStateBroadcast, foxproxy.ClientType_ClientTypePlugin},
+		{foxproxy.TransactionState_TransactionStateSync, foxproxy.ClientType_ClientTypePlugin},
+	}, foxproxy.ChainType_Aleo.Enum(), nil)
 }

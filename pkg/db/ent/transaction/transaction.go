@@ -15,14 +15,10 @@ const (
 	FieldEntID = "ent_id"
 	// FieldCoinType holds the string denoting the coin_type field in the database.
 	FieldCoinType = "coin_type"
-	// FieldNonce holds the string denoting the nonce field in the database.
-	FieldNonce = "nonce"
-	// FieldTransactionType holds the string denoting the transaction_type field in the database.
-	FieldTransactionType = "transaction_type"
-	// FieldRecentBhash holds the string denoting the recent_bhash field in the database.
-	FieldRecentBhash = "recent_bhash"
-	// FieldTxData holds the string denoting the tx_data field in the database.
-	FieldTxData = "tx_data"
+	// FieldChainType holds the string denoting the chain_type field in the database.
+	FieldChainType = "chain_type"
+	// FieldClientType holds the string denoting the client_type field in the database.
+	FieldClientType = "client_type"
 	// FieldTransactionID holds the string denoting the transaction_id field in the database.
 	FieldTransactionID = "transaction_id"
 	// FieldCid holds the string denoting the cid field in the database.
@@ -43,6 +39,8 @@ const (
 	FieldPayload = "payload"
 	// FieldState holds the string denoting the state field in the database.
 	FieldState = "state"
+	// FieldLockTime holds the string denoting the lock_time field in the database.
+	FieldLockTime = "lock_time"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
@@ -58,10 +56,8 @@ var Columns = []string{
 	FieldID,
 	FieldEntID,
 	FieldCoinType,
-	FieldNonce,
-	FieldTransactionType,
-	FieldRecentBhash,
-	FieldTxData,
+	FieldChainType,
+	FieldClientType,
 	FieldTransactionID,
 	FieldCid,
 	FieldExitCode,
@@ -72,6 +68,7 @@ var Columns = []string{
 	FieldAmount,
 	FieldPayload,
 	FieldState,
+	FieldLockTime,
 	FieldCreatedAt,
 	FieldUpdatedAt,
 	FieldDeletedAt,
@@ -92,14 +89,10 @@ var (
 	DefaultEntID func() uuid.UUID
 	// DefaultCoinType holds the default value on creation for the "coin_type" field.
 	DefaultCoinType int32
-	// DefaultNonce holds the default value on creation for the "nonce" field.
-	DefaultNonce uint64
-	// DefaultTransactionType holds the default value on creation for the "transaction_type" field.
-	DefaultTransactionType int8
-	// DefaultRecentBhash holds the default value on creation for the "recent_bhash" field.
-	DefaultRecentBhash string
-	// DefaultTxData holds the default value on creation for the "tx_data" field.
-	DefaultTxData []byte
+	// DefaultChainType holds the default value on creation for the "chain_type" field.
+	DefaultChainType int32
+	// DefaultClientType holds the default value on creation for the "client_type" field.
+	DefaultClientType int32
 	// DefaultCid holds the default value on creation for the "cid" field.
 	DefaultCid string
 	// DefaultExitCode holds the default value on creation for the "exit_code" field.
@@ -119,7 +112,9 @@ var (
 	// PayloadValidator is a validator for the "payload" field. It is called by the builders before save.
 	PayloadValidator func([]byte) error
 	// DefaultState holds the default value on creation for the "state" field.
-	DefaultState uint8
+	DefaultState int32
+	// DefaultLockTime holds the default value on creation for the "lock_time" field.
+	DefaultLockTime uint32
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() uint32
 	// DefaultUpdatedAt holds the default value on creation for the "updated_at" field.

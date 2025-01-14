@@ -26,22 +26,12 @@ func (Transaction) Fields() []ent.Field {
 		field.Int32("coin_type").
 			Optional().
 			Default(0),
-		field.Uint64("nonce").
+		field.Int32("chain_type").
 			Optional().
-			Default(0).
-			Comment("--will remove"),
-		field.Int8("transaction_type").
+			Default(0),
+		field.Int32("client_type").
 			Optional().
-			Default(0).
-			Comment("--will remove"),
-		field.String("recent_bhash").
-			Optional().
-			Default("").
-			Comment("--will remove"),
-		field.Bytes("tx_data").
-			Optional().
-			Default([]byte{}).
-			Comment("--will remove"),
+			Default(0),
 		field.String("transaction_id").
 			Unique(),
 		field.String("cid").
@@ -70,7 +60,10 @@ func (Transaction) Fields() []ent.Field {
 			MaxLen(math.MaxUint32).
 			Default([]byte{}).
 			Comment("save nonce or sign info"),
-		field.Uint8("state").
+		field.Int32("state").
+			Optional().
+			Default(0),
+		field.Uint32("lock_time").
 			Optional().
 			Default(0),
 		field.Uint32("created_at").

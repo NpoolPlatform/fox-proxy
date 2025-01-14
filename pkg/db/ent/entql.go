@@ -48,25 +48,24 @@ var schemaGraph = func() *sqlgraph.Schema {
 		},
 		Type: "Transaction",
 		Fields: map[string]*sqlgraph.FieldSpec{
-			transaction.FieldEntID:           {Type: field.TypeUUID, Column: transaction.FieldEntID},
-			transaction.FieldCoinType:        {Type: field.TypeInt32, Column: transaction.FieldCoinType},
-			transaction.FieldNonce:           {Type: field.TypeUint64, Column: transaction.FieldNonce},
-			transaction.FieldTransactionType: {Type: field.TypeInt8, Column: transaction.FieldTransactionType},
-			transaction.FieldRecentBhash:     {Type: field.TypeString, Column: transaction.FieldRecentBhash},
-			transaction.FieldTxData:          {Type: field.TypeBytes, Column: transaction.FieldTxData},
-			transaction.FieldTransactionID:   {Type: field.TypeString, Column: transaction.FieldTransactionID},
-			transaction.FieldCid:             {Type: field.TypeString, Column: transaction.FieldCid},
-			transaction.FieldExitCode:        {Type: field.TypeInt64, Column: transaction.FieldExitCode},
-			transaction.FieldName:            {Type: field.TypeString, Column: transaction.FieldName},
-			transaction.FieldFrom:            {Type: field.TypeString, Column: transaction.FieldFrom},
-			transaction.FieldTo:              {Type: field.TypeString, Column: transaction.FieldTo},
-			transaction.FieldMemo:            {Type: field.TypeString, Column: transaction.FieldMemo},
-			transaction.FieldAmount:          {Type: field.TypeUint64, Column: transaction.FieldAmount},
-			transaction.FieldPayload:         {Type: field.TypeBytes, Column: transaction.FieldPayload},
-			transaction.FieldState:           {Type: field.TypeUint8, Column: transaction.FieldState},
-			transaction.FieldCreatedAt:       {Type: field.TypeUint32, Column: transaction.FieldCreatedAt},
-			transaction.FieldUpdatedAt:       {Type: field.TypeUint32, Column: transaction.FieldUpdatedAt},
-			transaction.FieldDeletedAt:       {Type: field.TypeUint32, Column: transaction.FieldDeletedAt},
+			transaction.FieldEntID:         {Type: field.TypeUUID, Column: transaction.FieldEntID},
+			transaction.FieldCoinType:      {Type: field.TypeInt32, Column: transaction.FieldCoinType},
+			transaction.FieldChainType:     {Type: field.TypeInt32, Column: transaction.FieldChainType},
+			transaction.FieldClientType:    {Type: field.TypeInt32, Column: transaction.FieldClientType},
+			transaction.FieldTransactionID: {Type: field.TypeString, Column: transaction.FieldTransactionID},
+			transaction.FieldCid:           {Type: field.TypeString, Column: transaction.FieldCid},
+			transaction.FieldExitCode:      {Type: field.TypeInt64, Column: transaction.FieldExitCode},
+			transaction.FieldName:          {Type: field.TypeString, Column: transaction.FieldName},
+			transaction.FieldFrom:          {Type: field.TypeString, Column: transaction.FieldFrom},
+			transaction.FieldTo:            {Type: field.TypeString, Column: transaction.FieldTo},
+			transaction.FieldMemo:          {Type: field.TypeString, Column: transaction.FieldMemo},
+			transaction.FieldAmount:        {Type: field.TypeUint64, Column: transaction.FieldAmount},
+			transaction.FieldPayload:       {Type: field.TypeBytes, Column: transaction.FieldPayload},
+			transaction.FieldState:         {Type: field.TypeInt32, Column: transaction.FieldState},
+			transaction.FieldLockTime:      {Type: field.TypeUint32, Column: transaction.FieldLockTime},
+			transaction.FieldCreatedAt:     {Type: field.TypeUint32, Column: transaction.FieldCreatedAt},
+			transaction.FieldUpdatedAt:     {Type: field.TypeUint32, Column: transaction.FieldUpdatedAt},
+			transaction.FieldDeletedAt:     {Type: field.TypeUint32, Column: transaction.FieldDeletedAt},
 		},
 	}
 	return graph
@@ -213,24 +212,14 @@ func (f *TransactionFilter) WhereCoinType(p entql.Int32P) {
 	f.Where(p.Field(transaction.FieldCoinType))
 }
 
-// WhereNonce applies the entql uint64 predicate on the nonce field.
-func (f *TransactionFilter) WhereNonce(p entql.Uint64P) {
-	f.Where(p.Field(transaction.FieldNonce))
+// WhereChainType applies the entql int32 predicate on the chain_type field.
+func (f *TransactionFilter) WhereChainType(p entql.Int32P) {
+	f.Where(p.Field(transaction.FieldChainType))
 }
 
-// WhereTransactionType applies the entql int8 predicate on the transaction_type field.
-func (f *TransactionFilter) WhereTransactionType(p entql.Int8P) {
-	f.Where(p.Field(transaction.FieldTransactionType))
-}
-
-// WhereRecentBhash applies the entql string predicate on the recent_bhash field.
-func (f *TransactionFilter) WhereRecentBhash(p entql.StringP) {
-	f.Where(p.Field(transaction.FieldRecentBhash))
-}
-
-// WhereTxData applies the entql []byte predicate on the tx_data field.
-func (f *TransactionFilter) WhereTxData(p entql.BytesP) {
-	f.Where(p.Field(transaction.FieldTxData))
+// WhereClientType applies the entql int32 predicate on the client_type field.
+func (f *TransactionFilter) WhereClientType(p entql.Int32P) {
+	f.Where(p.Field(transaction.FieldClientType))
 }
 
 // WhereTransactionID applies the entql string predicate on the transaction_id field.
@@ -278,9 +267,14 @@ func (f *TransactionFilter) WherePayload(p entql.BytesP) {
 	f.Where(p.Field(transaction.FieldPayload))
 }
 
-// WhereState applies the entql uint8 predicate on the state field.
-func (f *TransactionFilter) WhereState(p entql.Uint8P) {
+// WhereState applies the entql int32 predicate on the state field.
+func (f *TransactionFilter) WhereState(p entql.Int32P) {
 	f.Where(p.Field(transaction.FieldState))
+}
+
+// WhereLockTime applies the entql uint32 predicate on the lock_time field.
+func (f *TransactionFilter) WhereLockTime(p entql.Uint32P) {
+	f.Where(p.Field(transaction.FieldLockTime))
 }
 
 // WhereCreatedAt applies the entql uint32 predicate on the created_at field.

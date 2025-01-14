@@ -80,7 +80,10 @@ func (tss TxStateSteps) GetNextStep(txState *foxproxy.TransactionState) (*TxStat
 	for ; idx < len(tss); idx++ {
 		if tss[idx].TxState == *txState {
 			if idx == len(tss)-1 {
-				return nil, nil
+				return &TxStateStep{
+					TxState:    foxproxy.TransactionState_TransactionStateDone,
+					ClientType: foxproxy.ClientType_ClientTypeDefault,
+				}, nil
 			}
 			return tss[idx+1], nil
 		}
