@@ -102,10 +102,9 @@ func RegisterDEClient(
 		}
 
 		err = client.Send(&foxproxy.DataElement{
-			ConnectID:  connID,
-			MsgID:      msgID,
-			Payload:    payload,
-			StatusCode: foxproxy.StatusCode_StatusCodeSuccess,
+			ConnectID: connID,
+			MsgID:     msgID,
+			Payload:   payload,
 		})
 		if err != nil {
 			return wlog.WrapError(err)
@@ -116,8 +115,8 @@ func RegisterDEClient(
 			return wlog.WrapError(err)
 		}
 
-		if data.StatusCode != foxproxy.StatusCode_StatusCodeSuccess {
-			return wlog.Errorf("failed to register to proxy, err: %v", data.StatusMsg)
+		if data.ErrMsg != nil && *data.ErrMsg != "" {
+			return wlog.Errorf("failed to register to proxy, err: %v", *data.ErrMsg)
 		}
 
 		return nil
@@ -144,8 +143,7 @@ func TestDEServerMGR(t *testing.T) {
 	clientInfo := infos[0]
 
 	msgInfo := deserver.MsgInfo{
-		Payload:    []byte("payload"),
-		StatusCode: foxproxy.StatusCode_StatusCodeMarshalErr.Enum(),
+		Payload: []byte("payload"),
 	}
 	err = mgr.SendMsg(clientCoinInfos[0].Name, clientType, foxproxy.MsgType_MsgTypeDefault, nil, nil, &msgInfo, nil)
 	if !assert.Nil(t, err) {
@@ -158,7 +156,6 @@ func TestDEServerMGR(t *testing.T) {
 	}
 	assert.Equal(t, dataEle.ConnectID, clientInfo.ID)
 	assert.Equal(t, dataEle.Payload, msgInfo.Payload)
-	assert.Equal(t, dataEle.StatusCode, *msgInfo.StatusCode)
 
 	payload := []byte{0, 1, 2, 3}
 	msgID := uuid.NewString()

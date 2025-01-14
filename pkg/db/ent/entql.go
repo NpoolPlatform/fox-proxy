@@ -3,6 +3,7 @@
 package ent
 
 import (
+	"github.com/NpoolPlatform/fox-proxy/pkg/db/ent/regcoininfo"
 	"github.com/NpoolPlatform/fox-proxy/pkg/db/ent/transaction"
 
 	"entgo.io/ent/dialect/sql"
@@ -13,8 +14,30 @@ import (
 
 // schemaGraph holds a representation of ent/schema at runtime.
 var schemaGraph = func() *sqlgraph.Schema {
-	graph := &sqlgraph.Schema{Nodes: make([]*sqlgraph.Node, 1)}
+	graph := &sqlgraph.Schema{Nodes: make([]*sqlgraph.Node, 2)}
 	graph.Nodes[0] = &sqlgraph.Node{
+		NodeSpec: sqlgraph.NodeSpec{
+			Table:   regcoininfo.Table,
+			Columns: regcoininfo.Columns,
+			ID: &sqlgraph.FieldSpec{
+				Type:   field.TypeUint32,
+				Column: regcoininfo.FieldID,
+			},
+		},
+		Type: "RegCoinInfo",
+		Fields: map[string]*sqlgraph.FieldSpec{
+			regcoininfo.FieldEntID:     {Type: field.TypeUUID, Column: regcoininfo.FieldEntID},
+			regcoininfo.FieldChainType: {Type: field.TypeInt32, Column: regcoininfo.FieldChainType},
+			regcoininfo.FieldCoinType:  {Type: field.TypeInt32, Column: regcoininfo.FieldCoinType},
+			regcoininfo.FieldTempName:  {Type: field.TypeString, Column: regcoininfo.FieldTempName},
+			regcoininfo.FieldName:      {Type: field.TypeString, Column: regcoininfo.FieldName},
+			regcoininfo.FieldEnv:       {Type: field.TypeString, Column: regcoininfo.FieldEnv},
+			regcoininfo.FieldCreatedAt: {Type: field.TypeUint32, Column: regcoininfo.FieldCreatedAt},
+			regcoininfo.FieldUpdatedAt: {Type: field.TypeUint32, Column: regcoininfo.FieldUpdatedAt},
+			regcoininfo.FieldDeletedAt: {Type: field.TypeUint32, Column: regcoininfo.FieldDeletedAt},
+		},
+	}
+	graph.Nodes[1] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   transaction.Table,
 			Columns: transaction.Columns,
@@ -56,6 +79,91 @@ type predicateAdder interface {
 }
 
 // addPredicate implements the predicateAdder interface.
+func (rciq *RegCoinInfoQuery) addPredicate(pred func(s *sql.Selector)) {
+	rciq.predicates = append(rciq.predicates, pred)
+}
+
+// Filter returns a Filter implementation to apply filters on the RegCoinInfoQuery builder.
+func (rciq *RegCoinInfoQuery) Filter() *RegCoinInfoFilter {
+	return &RegCoinInfoFilter{config: rciq.config, predicateAdder: rciq}
+}
+
+// addPredicate implements the predicateAdder interface.
+func (m *RegCoinInfoMutation) addPredicate(pred func(s *sql.Selector)) {
+	m.predicates = append(m.predicates, pred)
+}
+
+// Filter returns an entql.Where implementation to apply filters on the RegCoinInfoMutation builder.
+func (m *RegCoinInfoMutation) Filter() *RegCoinInfoFilter {
+	return &RegCoinInfoFilter{config: m.config, predicateAdder: m}
+}
+
+// RegCoinInfoFilter provides a generic filtering capability at runtime for RegCoinInfoQuery.
+type RegCoinInfoFilter struct {
+	predicateAdder
+	config
+}
+
+// Where applies the entql predicate on the query filter.
+func (f *RegCoinInfoFilter) Where(p entql.P) {
+	f.addPredicate(func(s *sql.Selector) {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[0].Type, p, s); err != nil {
+			s.AddError(err)
+		}
+	})
+}
+
+// WhereID applies the entql uint32 predicate on the id field.
+func (f *RegCoinInfoFilter) WhereID(p entql.Uint32P) {
+	f.Where(p.Field(regcoininfo.FieldID))
+}
+
+// WhereEntID applies the entql [16]byte predicate on the ent_id field.
+func (f *RegCoinInfoFilter) WhereEntID(p entql.ValueP) {
+	f.Where(p.Field(regcoininfo.FieldEntID))
+}
+
+// WhereChainType applies the entql int32 predicate on the chain_type field.
+func (f *RegCoinInfoFilter) WhereChainType(p entql.Int32P) {
+	f.Where(p.Field(regcoininfo.FieldChainType))
+}
+
+// WhereCoinType applies the entql int32 predicate on the coin_type field.
+func (f *RegCoinInfoFilter) WhereCoinType(p entql.Int32P) {
+	f.Where(p.Field(regcoininfo.FieldCoinType))
+}
+
+// WhereTempName applies the entql string predicate on the temp_name field.
+func (f *RegCoinInfoFilter) WhereTempName(p entql.StringP) {
+	f.Where(p.Field(regcoininfo.FieldTempName))
+}
+
+// WhereName applies the entql string predicate on the name field.
+func (f *RegCoinInfoFilter) WhereName(p entql.StringP) {
+	f.Where(p.Field(regcoininfo.FieldName))
+}
+
+// WhereEnv applies the entql string predicate on the env field.
+func (f *RegCoinInfoFilter) WhereEnv(p entql.StringP) {
+	f.Where(p.Field(regcoininfo.FieldEnv))
+}
+
+// WhereCreatedAt applies the entql uint32 predicate on the created_at field.
+func (f *RegCoinInfoFilter) WhereCreatedAt(p entql.Uint32P) {
+	f.Where(p.Field(regcoininfo.FieldCreatedAt))
+}
+
+// WhereUpdatedAt applies the entql uint32 predicate on the updated_at field.
+func (f *RegCoinInfoFilter) WhereUpdatedAt(p entql.Uint32P) {
+	f.Where(p.Field(regcoininfo.FieldUpdatedAt))
+}
+
+// WhereDeletedAt applies the entql uint32 predicate on the deleted_at field.
+func (f *RegCoinInfoFilter) WhereDeletedAt(p entql.Uint32P) {
+	f.Where(p.Field(regcoininfo.FieldDeletedAt))
+}
+
+// addPredicate implements the predicateAdder interface.
 func (tq *TransactionQuery) addPredicate(pred func(s *sql.Selector)) {
 	tq.predicates = append(tq.predicates, pred)
 }
@@ -84,7 +192,7 @@ type TransactionFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *TransactionFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[0].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[1].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})

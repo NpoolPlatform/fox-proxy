@@ -6,5 +6,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
+// RegCoinInfo is the predicate function for regcoininfo builders.
+type RegCoinInfo func(*sql.Selector)
+
 // Transaction is the predicate function for transaction builders.
 type Transaction func(*sql.Selector)

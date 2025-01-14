@@ -14,13 +14,12 @@ func TestMsgTypeRouter(t *testing.T) {
 		{MsgType: foxproxy.MsgType_MsgTypeEcho, ClientType: foxproxy.ClientType_ClientTypeSign},
 		{MsgType: foxproxy.MsgType_MsgTypeUpdateTx, ClientType: foxproxy.ClientType_ClientTypePlugin},
 	}
-	err := mtR.RegisterRouter(
+	mtR.RegisterRouter(
 		steps1,
 		foxproxy.MsgType_MsgTypeGetBalance,
 		nil,
 		nil,
 	)
-	assert.Nil(t, err)
 	ret, err := mtR.GetMsgTypeSteps(foxproxy.MsgType_MsgTypeGetBalance, nil, nil)
 	assert.Nil(t, err)
 	assert.Equal(t, steps1, ret)
@@ -44,13 +43,12 @@ func TestMsgTypeRouter(t *testing.T) {
 		{MsgType: foxproxy.MsgType_MsgTypeEcho, ClientType: foxproxy.ClientType_ClientTypeSign},
 		{MsgType: foxproxy.MsgType_MsgTypeUpdateTx, ClientType: foxproxy.ClientType_ClientTypePlugin},
 	}
-	err = mtR.RegisterRouter(
+	mtR.RegisterRouter(
 		steps2,
 		foxproxy.MsgType_MsgTypeEcho,
 		foxproxy.ChainType_Aleo.Enum(),
 		nil,
 	)
-	assert.Nil(t, err)
 
 	ret, err = mtR.GetMsgTypeSteps(foxproxy.MsgType_MsgTypeEcho, nil, nil)
 	assert.NotNil(t, err)

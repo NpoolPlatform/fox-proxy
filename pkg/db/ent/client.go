@@ -10,6 +10,7 @@ import (
 
 	"github.com/NpoolPlatform/fox-proxy/pkg/db/ent/migrate"
 
+	"github.com/NpoolPlatform/fox-proxy/pkg/db/ent/regcoininfo"
 	"github.com/NpoolPlatform/fox-proxy/pkg/db/ent/transaction"
 
 	"entgo.io/ent/dialect"
@@ -21,6 +22,8 @@ type Client struct {
 	config
 	// Schema is the client for creating, migrating and dropping schema.
 	Schema *migrate.Schema
+	// RegCoinInfo is the client for interacting with the RegCoinInfo builders.
+	RegCoinInfo *RegCoinInfoClient
 	// Transaction is the client for interacting with the Transaction builders.
 	Transaction *TransactionClient
 }
@@ -36,6 +39,7 @@ func NewClient(opts ...Option) *Client {
 
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
+	c.RegCoinInfo = NewRegCoinInfoClient(c.config)
 	c.Transaction = NewTransactionClient(c.config)
 }
 
@@ -70,6 +74,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	return &Tx{
 		ctx:         ctx,
 		config:      cfg,
+		RegCoinInfo: NewRegCoinInfoClient(cfg),
 		Transaction: NewTransactionClient(cfg),
 	}, nil
 }
@@ -90,6 +95,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	return &Tx{
 		ctx:         ctx,
 		config:      cfg,
+		RegCoinInfo: NewRegCoinInfoClient(cfg),
 		Transaction: NewTransactionClient(cfg),
 	}, nil
 }
@@ -97,7 +103,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 // Debug returns a new debug-client. It's used to get verbose logging on specific operations.
 //
 //	client.Debug().
-//		Transaction.
+//		RegCoinInfo.
 //		Query().
 //		Count(ctx)
 //
@@ -120,7 +126,98 @@ func (c *Client) Close() error {
 // Use adds the mutation hooks to all the entity clients.
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
+	c.RegCoinInfo.Use(hooks...)
 	c.Transaction.Use(hooks...)
+}
+
+// RegCoinInfoClient is a client for the RegCoinInfo schema.
+type RegCoinInfoClient struct {
+	config
+}
+
+// NewRegCoinInfoClient returns a client for the RegCoinInfo from the given config.
+func NewRegCoinInfoClient(c config) *RegCoinInfoClient {
+	return &RegCoinInfoClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `regcoininfo.Hooks(f(g(h())))`.
+func (c *RegCoinInfoClient) Use(hooks ...Hook) {
+	c.hooks.RegCoinInfo = append(c.hooks.RegCoinInfo, hooks...)
+}
+
+// Create returns a builder for creating a RegCoinInfo entity.
+func (c *RegCoinInfoClient) Create() *RegCoinInfoCreate {
+	mutation := newRegCoinInfoMutation(c.config, OpCreate)
+	return &RegCoinInfoCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of RegCoinInfo entities.
+func (c *RegCoinInfoClient) CreateBulk(builders ...*RegCoinInfoCreate) *RegCoinInfoCreateBulk {
+	return &RegCoinInfoCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for RegCoinInfo.
+func (c *RegCoinInfoClient) Update() *RegCoinInfoUpdate {
+	mutation := newRegCoinInfoMutation(c.config, OpUpdate)
+	return &RegCoinInfoUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *RegCoinInfoClient) UpdateOne(rci *RegCoinInfo) *RegCoinInfoUpdateOne {
+	mutation := newRegCoinInfoMutation(c.config, OpUpdateOne, withRegCoinInfo(rci))
+	return &RegCoinInfoUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *RegCoinInfoClient) UpdateOneID(id uint32) *RegCoinInfoUpdateOne {
+	mutation := newRegCoinInfoMutation(c.config, OpUpdateOne, withRegCoinInfoID(id))
+	return &RegCoinInfoUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for RegCoinInfo.
+func (c *RegCoinInfoClient) Delete() *RegCoinInfoDelete {
+	mutation := newRegCoinInfoMutation(c.config, OpDelete)
+	return &RegCoinInfoDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *RegCoinInfoClient) DeleteOne(rci *RegCoinInfo) *RegCoinInfoDeleteOne {
+	return c.DeleteOneID(rci.ID)
+}
+
+// DeleteOne returns a builder for deleting the given entity by its id.
+func (c *RegCoinInfoClient) DeleteOneID(id uint32) *RegCoinInfoDeleteOne {
+	builder := c.Delete().Where(regcoininfo.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &RegCoinInfoDeleteOne{builder}
+}
+
+// Query returns a query builder for RegCoinInfo.
+func (c *RegCoinInfoClient) Query() *RegCoinInfoQuery {
+	return &RegCoinInfoQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a RegCoinInfo entity by its id.
+func (c *RegCoinInfoClient) Get(ctx context.Context, id uint32) (*RegCoinInfo, error) {
+	return c.Query().Where(regcoininfo.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *RegCoinInfoClient) GetX(ctx context.Context, id uint32) *RegCoinInfo {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *RegCoinInfoClient) Hooks() []Hook {
+	return c.hooks.RegCoinInfo
 }
 
 // TransactionClient is a client for the Transaction schema.

@@ -15,6 +15,15 @@ type TxStateSteps []*TxStateStep
 
 type TxStateRouter struct{ treeNode }
 
+var tsRouter *TxStateRouter
+
+func GetTxStateRouter() *TxStateRouter {
+	if tsRouter == nil {
+		tsRouter = &TxStateRouter{}
+	}
+	return tsRouter
+}
+
 func (r *TxStateRouter) RegisterRouter(
 	val TxStateSteps,
 	chainType *foxproxy.ChainType,

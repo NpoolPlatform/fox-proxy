@@ -9,6 +9,7 @@ import (
 	"sync"
 
 	"github.com/NpoolPlatform/fox-proxy/pkg/db/ent/predicate"
+	"github.com/NpoolPlatform/fox-proxy/pkg/db/ent/regcoininfo"
 	"github.com/NpoolPlatform/fox-proxy/pkg/db/ent/transaction"
 	"github.com/google/uuid"
 
@@ -24,8 +25,1067 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
+	TypeRegCoinInfo = "RegCoinInfo"
 	TypeTransaction = "Transaction"
 )
+
+// RegCoinInfoMutation represents an operation that mutates the RegCoinInfo nodes in the graph.
+type RegCoinInfoMutation struct {
+	config
+	op            Op
+	typ           string
+	id            *uint32
+	ent_id        *uuid.UUID
+	chain_type    *int32
+	addchain_type *int32
+	coin_type     *int32
+	addcoin_type  *int32
+	temp_name     *string
+	name          *string
+	env           *string
+	created_at    *uint32
+	addcreated_at *int32
+	updated_at    *uint32
+	addupdated_at *int32
+	deleted_at    *uint32
+	adddeleted_at *int32
+	clearedFields map[string]struct{}
+	done          bool
+	oldValue      func(context.Context) (*RegCoinInfo, error)
+	predicates    []predicate.RegCoinInfo
+}
+
+var _ ent.Mutation = (*RegCoinInfoMutation)(nil)
+
+// regcoininfoOption allows management of the mutation configuration using functional options.
+type regcoininfoOption func(*RegCoinInfoMutation)
+
+// newRegCoinInfoMutation creates new mutation for the RegCoinInfo entity.
+func newRegCoinInfoMutation(c config, op Op, opts ...regcoininfoOption) *RegCoinInfoMutation {
+	m := &RegCoinInfoMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeRegCoinInfo,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withRegCoinInfoID sets the ID field of the mutation.
+func withRegCoinInfoID(id uint32) regcoininfoOption {
+	return func(m *RegCoinInfoMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *RegCoinInfo
+		)
+		m.oldValue = func(ctx context.Context) (*RegCoinInfo, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().RegCoinInfo.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withRegCoinInfo sets the old RegCoinInfo of the mutation.
+func withRegCoinInfo(node *RegCoinInfo) regcoininfoOption {
+	return func(m *RegCoinInfoMutation) {
+		m.oldValue = func(context.Context) (*RegCoinInfo, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m RegCoinInfoMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m RegCoinInfoMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of RegCoinInfo entities.
+func (m *RegCoinInfoMutation) SetID(id uint32) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *RegCoinInfoMutation) ID() (id uint32, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *RegCoinInfoMutation) IDs(ctx context.Context) ([]uint32, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []uint32{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().RegCoinInfo.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetEntID sets the "ent_id" field.
+func (m *RegCoinInfoMutation) SetEntID(u uuid.UUID) {
+	m.ent_id = &u
+}
+
+// EntID returns the value of the "ent_id" field in the mutation.
+func (m *RegCoinInfoMutation) EntID() (r uuid.UUID, exists bool) {
+	v := m.ent_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldEntID returns the old "ent_id" field's value of the RegCoinInfo entity.
+// If the RegCoinInfo object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RegCoinInfoMutation) OldEntID(ctx context.Context) (v uuid.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldEntID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldEntID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldEntID: %w", err)
+	}
+	return oldValue.EntID, nil
+}
+
+// ResetEntID resets all changes to the "ent_id" field.
+func (m *RegCoinInfoMutation) ResetEntID() {
+	m.ent_id = nil
+}
+
+// SetChainType sets the "chain_type" field.
+func (m *RegCoinInfoMutation) SetChainType(i int32) {
+	m.chain_type = &i
+	m.addchain_type = nil
+}
+
+// ChainType returns the value of the "chain_type" field in the mutation.
+func (m *RegCoinInfoMutation) ChainType() (r int32, exists bool) {
+	v := m.chain_type
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldChainType returns the old "chain_type" field's value of the RegCoinInfo entity.
+// If the RegCoinInfo object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RegCoinInfoMutation) OldChainType(ctx context.Context) (v int32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldChainType is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldChainType requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldChainType: %w", err)
+	}
+	return oldValue.ChainType, nil
+}
+
+// AddChainType adds i to the "chain_type" field.
+func (m *RegCoinInfoMutation) AddChainType(i int32) {
+	if m.addchain_type != nil {
+		*m.addchain_type += i
+	} else {
+		m.addchain_type = &i
+	}
+}
+
+// AddedChainType returns the value that was added to the "chain_type" field in this mutation.
+func (m *RegCoinInfoMutation) AddedChainType() (r int32, exists bool) {
+	v := m.addchain_type
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearChainType clears the value of the "chain_type" field.
+func (m *RegCoinInfoMutation) ClearChainType() {
+	m.chain_type = nil
+	m.addchain_type = nil
+	m.clearedFields[regcoininfo.FieldChainType] = struct{}{}
+}
+
+// ChainTypeCleared returns if the "chain_type" field was cleared in this mutation.
+func (m *RegCoinInfoMutation) ChainTypeCleared() bool {
+	_, ok := m.clearedFields[regcoininfo.FieldChainType]
+	return ok
+}
+
+// ResetChainType resets all changes to the "chain_type" field.
+func (m *RegCoinInfoMutation) ResetChainType() {
+	m.chain_type = nil
+	m.addchain_type = nil
+	delete(m.clearedFields, regcoininfo.FieldChainType)
+}
+
+// SetCoinType sets the "coin_type" field.
+func (m *RegCoinInfoMutation) SetCoinType(i int32) {
+	m.coin_type = &i
+	m.addcoin_type = nil
+}
+
+// CoinType returns the value of the "coin_type" field in the mutation.
+func (m *RegCoinInfoMutation) CoinType() (r int32, exists bool) {
+	v := m.coin_type
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCoinType returns the old "coin_type" field's value of the RegCoinInfo entity.
+// If the RegCoinInfo object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RegCoinInfoMutation) OldCoinType(ctx context.Context) (v int32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCoinType is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCoinType requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCoinType: %w", err)
+	}
+	return oldValue.CoinType, nil
+}
+
+// AddCoinType adds i to the "coin_type" field.
+func (m *RegCoinInfoMutation) AddCoinType(i int32) {
+	if m.addcoin_type != nil {
+		*m.addcoin_type += i
+	} else {
+		m.addcoin_type = &i
+	}
+}
+
+// AddedCoinType returns the value that was added to the "coin_type" field in this mutation.
+func (m *RegCoinInfoMutation) AddedCoinType() (r int32, exists bool) {
+	v := m.addcoin_type
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearCoinType clears the value of the "coin_type" field.
+func (m *RegCoinInfoMutation) ClearCoinType() {
+	m.coin_type = nil
+	m.addcoin_type = nil
+	m.clearedFields[regcoininfo.FieldCoinType] = struct{}{}
+}
+
+// CoinTypeCleared returns if the "coin_type" field was cleared in this mutation.
+func (m *RegCoinInfoMutation) CoinTypeCleared() bool {
+	_, ok := m.clearedFields[regcoininfo.FieldCoinType]
+	return ok
+}
+
+// ResetCoinType resets all changes to the "coin_type" field.
+func (m *RegCoinInfoMutation) ResetCoinType() {
+	m.coin_type = nil
+	m.addcoin_type = nil
+	delete(m.clearedFields, regcoininfo.FieldCoinType)
+}
+
+// SetTempName sets the "temp_name" field.
+func (m *RegCoinInfoMutation) SetTempName(s string) {
+	m.temp_name = &s
+}
+
+// TempName returns the value of the "temp_name" field in the mutation.
+func (m *RegCoinInfoMutation) TempName() (r string, exists bool) {
+	v := m.temp_name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTempName returns the old "temp_name" field's value of the RegCoinInfo entity.
+// If the RegCoinInfo object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RegCoinInfoMutation) OldTempName(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTempName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTempName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTempName: %w", err)
+	}
+	return oldValue.TempName, nil
+}
+
+// ClearTempName clears the value of the "temp_name" field.
+func (m *RegCoinInfoMutation) ClearTempName() {
+	m.temp_name = nil
+	m.clearedFields[regcoininfo.FieldTempName] = struct{}{}
+}
+
+// TempNameCleared returns if the "temp_name" field was cleared in this mutation.
+func (m *RegCoinInfoMutation) TempNameCleared() bool {
+	_, ok := m.clearedFields[regcoininfo.FieldTempName]
+	return ok
+}
+
+// ResetTempName resets all changes to the "temp_name" field.
+func (m *RegCoinInfoMutation) ResetTempName() {
+	m.temp_name = nil
+	delete(m.clearedFields, regcoininfo.FieldTempName)
+}
+
+// SetName sets the "name" field.
+func (m *RegCoinInfoMutation) SetName(s string) {
+	m.name = &s
+}
+
+// Name returns the value of the "name" field in the mutation.
+func (m *RegCoinInfoMutation) Name() (r string, exists bool) {
+	v := m.name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldName returns the old "name" field's value of the RegCoinInfo entity.
+// If the RegCoinInfo object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RegCoinInfoMutation) OldName(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldName: %w", err)
+	}
+	return oldValue.Name, nil
+}
+
+// ResetName resets all changes to the "name" field.
+func (m *RegCoinInfoMutation) ResetName() {
+	m.name = nil
+}
+
+// SetEnv sets the "env" field.
+func (m *RegCoinInfoMutation) SetEnv(s string) {
+	m.env = &s
+}
+
+// Env returns the value of the "env" field in the mutation.
+func (m *RegCoinInfoMutation) Env() (r string, exists bool) {
+	v := m.env
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldEnv returns the old "env" field's value of the RegCoinInfo entity.
+// If the RegCoinInfo object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RegCoinInfoMutation) OldEnv(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldEnv is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldEnv requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldEnv: %w", err)
+	}
+	return oldValue.Env, nil
+}
+
+// ClearEnv clears the value of the "env" field.
+func (m *RegCoinInfoMutation) ClearEnv() {
+	m.env = nil
+	m.clearedFields[regcoininfo.FieldEnv] = struct{}{}
+}
+
+// EnvCleared returns if the "env" field was cleared in this mutation.
+func (m *RegCoinInfoMutation) EnvCleared() bool {
+	_, ok := m.clearedFields[regcoininfo.FieldEnv]
+	return ok
+}
+
+// ResetEnv resets all changes to the "env" field.
+func (m *RegCoinInfoMutation) ResetEnv() {
+	m.env = nil
+	delete(m.clearedFields, regcoininfo.FieldEnv)
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *RegCoinInfoMutation) SetCreatedAt(u uint32) {
+	m.created_at = &u
+	m.addcreated_at = nil
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *RegCoinInfoMutation) CreatedAt() (r uint32, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the RegCoinInfo entity.
+// If the RegCoinInfo object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RegCoinInfoMutation) OldCreatedAt(ctx context.Context) (v uint32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// AddCreatedAt adds u to the "created_at" field.
+func (m *RegCoinInfoMutation) AddCreatedAt(u int32) {
+	if m.addcreated_at != nil {
+		*m.addcreated_at += u
+	} else {
+		m.addcreated_at = &u
+	}
+}
+
+// AddedCreatedAt returns the value that was added to the "created_at" field in this mutation.
+func (m *RegCoinInfoMutation) AddedCreatedAt() (r int32, exists bool) {
+	v := m.addcreated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearCreatedAt clears the value of the "created_at" field.
+func (m *RegCoinInfoMutation) ClearCreatedAt() {
+	m.created_at = nil
+	m.addcreated_at = nil
+	m.clearedFields[regcoininfo.FieldCreatedAt] = struct{}{}
+}
+
+// CreatedAtCleared returns if the "created_at" field was cleared in this mutation.
+func (m *RegCoinInfoMutation) CreatedAtCleared() bool {
+	_, ok := m.clearedFields[regcoininfo.FieldCreatedAt]
+	return ok
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *RegCoinInfoMutation) ResetCreatedAt() {
+	m.created_at = nil
+	m.addcreated_at = nil
+	delete(m.clearedFields, regcoininfo.FieldCreatedAt)
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *RegCoinInfoMutation) SetUpdatedAt(u uint32) {
+	m.updated_at = &u
+	m.addupdated_at = nil
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *RegCoinInfoMutation) UpdatedAt() (r uint32, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the RegCoinInfo entity.
+// If the RegCoinInfo object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RegCoinInfoMutation) OldUpdatedAt(ctx context.Context) (v uint32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// AddUpdatedAt adds u to the "updated_at" field.
+func (m *RegCoinInfoMutation) AddUpdatedAt(u int32) {
+	if m.addupdated_at != nil {
+		*m.addupdated_at += u
+	} else {
+		m.addupdated_at = &u
+	}
+}
+
+// AddedUpdatedAt returns the value that was added to the "updated_at" field in this mutation.
+func (m *RegCoinInfoMutation) AddedUpdatedAt() (r int32, exists bool) {
+	v := m.addupdated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearUpdatedAt clears the value of the "updated_at" field.
+func (m *RegCoinInfoMutation) ClearUpdatedAt() {
+	m.updated_at = nil
+	m.addupdated_at = nil
+	m.clearedFields[regcoininfo.FieldUpdatedAt] = struct{}{}
+}
+
+// UpdatedAtCleared returns if the "updated_at" field was cleared in this mutation.
+func (m *RegCoinInfoMutation) UpdatedAtCleared() bool {
+	_, ok := m.clearedFields[regcoininfo.FieldUpdatedAt]
+	return ok
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *RegCoinInfoMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+	m.addupdated_at = nil
+	delete(m.clearedFields, regcoininfo.FieldUpdatedAt)
+}
+
+// SetDeletedAt sets the "deleted_at" field.
+func (m *RegCoinInfoMutation) SetDeletedAt(u uint32) {
+	m.deleted_at = &u
+	m.adddeleted_at = nil
+}
+
+// DeletedAt returns the value of the "deleted_at" field in the mutation.
+func (m *RegCoinInfoMutation) DeletedAt() (r uint32, exists bool) {
+	v := m.deleted_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDeletedAt returns the old "deleted_at" field's value of the RegCoinInfo entity.
+// If the RegCoinInfo object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RegCoinInfoMutation) OldDeletedAt(ctx context.Context) (v uint32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDeletedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDeletedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDeletedAt: %w", err)
+	}
+	return oldValue.DeletedAt, nil
+}
+
+// AddDeletedAt adds u to the "deleted_at" field.
+func (m *RegCoinInfoMutation) AddDeletedAt(u int32) {
+	if m.adddeleted_at != nil {
+		*m.adddeleted_at += u
+	} else {
+		m.adddeleted_at = &u
+	}
+}
+
+// AddedDeletedAt returns the value that was added to the "deleted_at" field in this mutation.
+func (m *RegCoinInfoMutation) AddedDeletedAt() (r int32, exists bool) {
+	v := m.adddeleted_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearDeletedAt clears the value of the "deleted_at" field.
+func (m *RegCoinInfoMutation) ClearDeletedAt() {
+	m.deleted_at = nil
+	m.adddeleted_at = nil
+	m.clearedFields[regcoininfo.FieldDeletedAt] = struct{}{}
+}
+
+// DeletedAtCleared returns if the "deleted_at" field was cleared in this mutation.
+func (m *RegCoinInfoMutation) DeletedAtCleared() bool {
+	_, ok := m.clearedFields[regcoininfo.FieldDeletedAt]
+	return ok
+}
+
+// ResetDeletedAt resets all changes to the "deleted_at" field.
+func (m *RegCoinInfoMutation) ResetDeletedAt() {
+	m.deleted_at = nil
+	m.adddeleted_at = nil
+	delete(m.clearedFields, regcoininfo.FieldDeletedAt)
+}
+
+// Where appends a list predicates to the RegCoinInfoMutation builder.
+func (m *RegCoinInfoMutation) Where(ps ...predicate.RegCoinInfo) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// Op returns the operation name.
+func (m *RegCoinInfoMutation) Op() Op {
+	return m.op
+}
+
+// Type returns the node type of this mutation (RegCoinInfo).
+func (m *RegCoinInfoMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *RegCoinInfoMutation) Fields() []string {
+	fields := make([]string, 0, 9)
+	if m.ent_id != nil {
+		fields = append(fields, regcoininfo.FieldEntID)
+	}
+	if m.chain_type != nil {
+		fields = append(fields, regcoininfo.FieldChainType)
+	}
+	if m.coin_type != nil {
+		fields = append(fields, regcoininfo.FieldCoinType)
+	}
+	if m.temp_name != nil {
+		fields = append(fields, regcoininfo.FieldTempName)
+	}
+	if m.name != nil {
+		fields = append(fields, regcoininfo.FieldName)
+	}
+	if m.env != nil {
+		fields = append(fields, regcoininfo.FieldEnv)
+	}
+	if m.created_at != nil {
+		fields = append(fields, regcoininfo.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, regcoininfo.FieldUpdatedAt)
+	}
+	if m.deleted_at != nil {
+		fields = append(fields, regcoininfo.FieldDeletedAt)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *RegCoinInfoMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case regcoininfo.FieldEntID:
+		return m.EntID()
+	case regcoininfo.FieldChainType:
+		return m.ChainType()
+	case regcoininfo.FieldCoinType:
+		return m.CoinType()
+	case regcoininfo.FieldTempName:
+		return m.TempName()
+	case regcoininfo.FieldName:
+		return m.Name()
+	case regcoininfo.FieldEnv:
+		return m.Env()
+	case regcoininfo.FieldCreatedAt:
+		return m.CreatedAt()
+	case regcoininfo.FieldUpdatedAt:
+		return m.UpdatedAt()
+	case regcoininfo.FieldDeletedAt:
+		return m.DeletedAt()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *RegCoinInfoMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case regcoininfo.FieldEntID:
+		return m.OldEntID(ctx)
+	case regcoininfo.FieldChainType:
+		return m.OldChainType(ctx)
+	case regcoininfo.FieldCoinType:
+		return m.OldCoinType(ctx)
+	case regcoininfo.FieldTempName:
+		return m.OldTempName(ctx)
+	case regcoininfo.FieldName:
+		return m.OldName(ctx)
+	case regcoininfo.FieldEnv:
+		return m.OldEnv(ctx)
+	case regcoininfo.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case regcoininfo.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	case regcoininfo.FieldDeletedAt:
+		return m.OldDeletedAt(ctx)
+	}
+	return nil, fmt.Errorf("unknown RegCoinInfo field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *RegCoinInfoMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case regcoininfo.FieldEntID:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetEntID(v)
+		return nil
+	case regcoininfo.FieldChainType:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetChainType(v)
+		return nil
+	case regcoininfo.FieldCoinType:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCoinType(v)
+		return nil
+	case regcoininfo.FieldTempName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTempName(v)
+		return nil
+	case regcoininfo.FieldName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetName(v)
+		return nil
+	case regcoininfo.FieldEnv:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetEnv(v)
+		return nil
+	case regcoininfo.FieldCreatedAt:
+		v, ok := value.(uint32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case regcoininfo.FieldUpdatedAt:
+		v, ok := value.(uint32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	case regcoininfo.FieldDeletedAt:
+		v, ok := value.(uint32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDeletedAt(v)
+		return nil
+	}
+	return fmt.Errorf("unknown RegCoinInfo field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *RegCoinInfoMutation) AddedFields() []string {
+	var fields []string
+	if m.addchain_type != nil {
+		fields = append(fields, regcoininfo.FieldChainType)
+	}
+	if m.addcoin_type != nil {
+		fields = append(fields, regcoininfo.FieldCoinType)
+	}
+	if m.addcreated_at != nil {
+		fields = append(fields, regcoininfo.FieldCreatedAt)
+	}
+	if m.addupdated_at != nil {
+		fields = append(fields, regcoininfo.FieldUpdatedAt)
+	}
+	if m.adddeleted_at != nil {
+		fields = append(fields, regcoininfo.FieldDeletedAt)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *RegCoinInfoMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case regcoininfo.FieldChainType:
+		return m.AddedChainType()
+	case regcoininfo.FieldCoinType:
+		return m.AddedCoinType()
+	case regcoininfo.FieldCreatedAt:
+		return m.AddedCreatedAt()
+	case regcoininfo.FieldUpdatedAt:
+		return m.AddedUpdatedAt()
+	case regcoininfo.FieldDeletedAt:
+		return m.AddedDeletedAt()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *RegCoinInfoMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case regcoininfo.FieldChainType:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddChainType(v)
+		return nil
+	case regcoininfo.FieldCoinType:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddCoinType(v)
+		return nil
+	case regcoininfo.FieldCreatedAt:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddCreatedAt(v)
+		return nil
+	case regcoininfo.FieldUpdatedAt:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddUpdatedAt(v)
+		return nil
+	case regcoininfo.FieldDeletedAt:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddDeletedAt(v)
+		return nil
+	}
+	return fmt.Errorf("unknown RegCoinInfo numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *RegCoinInfoMutation) ClearedFields() []string {
+	var fields []string
+	if m.FieldCleared(regcoininfo.FieldChainType) {
+		fields = append(fields, regcoininfo.FieldChainType)
+	}
+	if m.FieldCleared(regcoininfo.FieldCoinType) {
+		fields = append(fields, regcoininfo.FieldCoinType)
+	}
+	if m.FieldCleared(regcoininfo.FieldTempName) {
+		fields = append(fields, regcoininfo.FieldTempName)
+	}
+	if m.FieldCleared(regcoininfo.FieldEnv) {
+		fields = append(fields, regcoininfo.FieldEnv)
+	}
+	if m.FieldCleared(regcoininfo.FieldCreatedAt) {
+		fields = append(fields, regcoininfo.FieldCreatedAt)
+	}
+	if m.FieldCleared(regcoininfo.FieldUpdatedAt) {
+		fields = append(fields, regcoininfo.FieldUpdatedAt)
+	}
+	if m.FieldCleared(regcoininfo.FieldDeletedAt) {
+		fields = append(fields, regcoininfo.FieldDeletedAt)
+	}
+	return fields
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *RegCoinInfoMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *RegCoinInfoMutation) ClearField(name string) error {
+	switch name {
+	case regcoininfo.FieldChainType:
+		m.ClearChainType()
+		return nil
+	case regcoininfo.FieldCoinType:
+		m.ClearCoinType()
+		return nil
+	case regcoininfo.FieldTempName:
+		m.ClearTempName()
+		return nil
+	case regcoininfo.FieldEnv:
+		m.ClearEnv()
+		return nil
+	case regcoininfo.FieldCreatedAt:
+		m.ClearCreatedAt()
+		return nil
+	case regcoininfo.FieldUpdatedAt:
+		m.ClearUpdatedAt()
+		return nil
+	case regcoininfo.FieldDeletedAt:
+		m.ClearDeletedAt()
+		return nil
+	}
+	return fmt.Errorf("unknown RegCoinInfo nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *RegCoinInfoMutation) ResetField(name string) error {
+	switch name {
+	case regcoininfo.FieldEntID:
+		m.ResetEntID()
+		return nil
+	case regcoininfo.FieldChainType:
+		m.ResetChainType()
+		return nil
+	case regcoininfo.FieldCoinType:
+		m.ResetCoinType()
+		return nil
+	case regcoininfo.FieldTempName:
+		m.ResetTempName()
+		return nil
+	case regcoininfo.FieldName:
+		m.ResetName()
+		return nil
+	case regcoininfo.FieldEnv:
+		m.ResetEnv()
+		return nil
+	case regcoininfo.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case regcoininfo.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	case regcoininfo.FieldDeletedAt:
+		m.ResetDeletedAt()
+		return nil
+	}
+	return fmt.Errorf("unknown RegCoinInfo field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *RegCoinInfoMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *RegCoinInfoMutation) AddedIDs(name string) []ent.Value {
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *RegCoinInfoMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *RegCoinInfoMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *RegCoinInfoMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *RegCoinInfoMutation) EdgeCleared(name string) bool {
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *RegCoinInfoMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown RegCoinInfo unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *RegCoinInfoMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown RegCoinInfo edge %s", name)
+}
 
 // TransactionMutation represents an operation that mutates the Transaction nodes in the graph.
 type TransactionMutation struct {

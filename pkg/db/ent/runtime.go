@@ -3,6 +3,7 @@
 package ent
 
 import (
+	"github.com/NpoolPlatform/fox-proxy/pkg/db/ent/regcoininfo"
 	"github.com/NpoolPlatform/fox-proxy/pkg/db/ent/schema"
 	"github.com/NpoolPlatform/fox-proxy/pkg/db/ent/transaction"
 	"github.com/google/uuid"
@@ -12,6 +13,45 @@ import (
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
+	regcoininfoMixin := schema.RegCoinInfo{}.Mixin()
+	regcoininfoMixinFields0 := regcoininfoMixin[0].Fields()
+	_ = regcoininfoMixinFields0
+	regcoininfoFields := schema.RegCoinInfo{}.Fields()
+	_ = regcoininfoFields
+	// regcoininfoDescEntID is the schema descriptor for ent_id field.
+	regcoininfoDescEntID := regcoininfoMixinFields0[1].Descriptor()
+	// regcoininfo.DefaultEntID holds the default value on creation for the ent_id field.
+	regcoininfo.DefaultEntID = regcoininfoDescEntID.Default.(func() uuid.UUID)
+	// regcoininfoDescChainType is the schema descriptor for chain_type field.
+	regcoininfoDescChainType := regcoininfoFields[0].Descriptor()
+	// regcoininfo.DefaultChainType holds the default value on creation for the chain_type field.
+	regcoininfo.DefaultChainType = regcoininfoDescChainType.Default.(int32)
+	// regcoininfoDescCoinType is the schema descriptor for coin_type field.
+	regcoininfoDescCoinType := regcoininfoFields[1].Descriptor()
+	// regcoininfo.DefaultCoinType holds the default value on creation for the coin_type field.
+	regcoininfo.DefaultCoinType = regcoininfoDescCoinType.Default.(int32)
+	// regcoininfoDescTempName is the schema descriptor for temp_name field.
+	regcoininfoDescTempName := regcoininfoFields[2].Descriptor()
+	// regcoininfo.DefaultTempName holds the default value on creation for the temp_name field.
+	regcoininfo.DefaultTempName = regcoininfoDescTempName.Default.(string)
+	// regcoininfoDescEnv is the schema descriptor for env field.
+	regcoininfoDescEnv := regcoininfoFields[4].Descriptor()
+	// regcoininfo.DefaultEnv holds the default value on creation for the env field.
+	regcoininfo.DefaultEnv = regcoininfoDescEnv.Default.(string)
+	// regcoininfoDescCreatedAt is the schema descriptor for created_at field.
+	regcoininfoDescCreatedAt := regcoininfoFields[5].Descriptor()
+	// regcoininfo.DefaultCreatedAt holds the default value on creation for the created_at field.
+	regcoininfo.DefaultCreatedAt = regcoininfoDescCreatedAt.Default.(func() uint32)
+	// regcoininfoDescUpdatedAt is the schema descriptor for updated_at field.
+	regcoininfoDescUpdatedAt := regcoininfoFields[6].Descriptor()
+	// regcoininfo.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	regcoininfo.DefaultUpdatedAt = regcoininfoDescUpdatedAt.Default.(func() uint32)
+	// regcoininfo.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	regcoininfo.UpdateDefaultUpdatedAt = regcoininfoDescUpdatedAt.UpdateDefault.(func() uint32)
+	// regcoininfoDescDeletedAt is the schema descriptor for deleted_at field.
+	regcoininfoDescDeletedAt := regcoininfoFields[7].Descriptor()
+	// regcoininfo.DefaultDeletedAt holds the default value on creation for the deleted_at field.
+	regcoininfo.DefaultDeletedAt = regcoininfoDescDeletedAt.Default.(func() uint32)
 	transactionMixin := schema.Transaction{}.Mixin()
 	transactionMixinFields0 := transactionMixin[0].Fields()
 	_ = transactionMixinFields0

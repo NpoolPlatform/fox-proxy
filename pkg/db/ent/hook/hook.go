@@ -9,6 +9,19 @@ import (
 	"github.com/NpoolPlatform/fox-proxy/pkg/db/ent"
 )
 
+// The RegCoinInfoFunc type is an adapter to allow the use of ordinary
+// function as RegCoinInfo mutator.
+type RegCoinInfoFunc func(context.Context, *ent.RegCoinInfoMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f RegCoinInfoFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.RegCoinInfoMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.RegCoinInfoMutation", m)
+	}
+	return f(ctx, mv)
+}
+
 // The TransactionFunc type is an adapter to allow the use of ordinary
 // function as Transaction mutator.
 type TransactionFunc func(context.Context, *ent.TransactionMutation) (ent.Value, error)

@@ -14,8 +14,11 @@ func (s *Server) DEStream(stream foxproxy.FoxProxyStream_DEStreamServer) error {
 	}
 	defer conn.Close()
 
-	mgr := deserver.GetDEServerMGR()
-	mgr.AddDEServer(conn)
+	err = deserver.GetDEServerMGR().AddDEServer(conn)
+	if err != nil {
+		logger.Sugar().Error(err)
+		return err
+	}
 
 	conn.OnRecv()
 	return nil

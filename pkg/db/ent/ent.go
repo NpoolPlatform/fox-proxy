@@ -10,6 +10,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"github.com/NpoolPlatform/fox-proxy/pkg/db/ent/regcoininfo"
 	"github.com/NpoolPlatform/fox-proxy/pkg/db/ent/transaction"
 )
 
@@ -31,6 +32,7 @@ type OrderFunc func(*sql.Selector)
 // columnChecker returns a function indicates if the column exists in the given column.
 func columnChecker(table string) func(string) error {
 	checks := map[string]func(string) bool{
+		regcoininfo.Table: regcoininfo.ValidColumn,
 		transaction.Table: transaction.ValidColumn,
 	}
 	check, ok := checks[table]

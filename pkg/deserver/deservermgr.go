@@ -7,6 +7,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/NpoolPlatform/fox-proxy/pkg/crud/regcoininfo"
 	"github.com/NpoolPlatform/go-service-framework/pkg/logger"
 	"github.com/NpoolPlatform/message/npool/foxproxy"
 	"github.com/google/uuid"
@@ -14,7 +15,6 @@ import (
 
 //nolint:revive
 type DEServerMGR struct {
-	coinInfos   map[string]*foxproxy.CoinInfo
 	connInfos   map[string]map[foxproxy.ClientType][]*DEServer
 	recvChannel sync.Map
 	connections []*DEServer
@@ -25,7 +25,6 @@ var cmgr *DEServerMGR
 func GetDEServerMGR() *DEServerMGR {
 	if cmgr == nil {
 		cmgr = &DEServerMGR{
-			coinInfos:   make(map[string]*foxproxy.CoinInfo),
 			connInfos:   make(map[string]map[foxproxy.ClientType][]*DEServer),
 			recvChannel: sync.Map{},
 		}
@@ -33,9 +32,12 @@ func GetDEServerMGR() *DEServerMGR {
 	return cmgr
 }
 
-func (mgr *DEServerMGR) AddDEServer(conn *DEServer) {
+func (mgr *DEServerMGR) AddDEServer(conn *DEServer) error {
 	for _, info := range conn.Infos {
-		mgr.coinInfos[info.Name] = info
+		err := regcoininfo.CreateRegCoinInfo(conn.ctx, info)
+		if err != nil {
+			return err
+		}
 		if _, ok := mgr.connInfos[info.Name]; !ok {
 			mgr.connInfos[info.Name] = make(map[foxproxy.ClientType][]*DEServer)
 		}
@@ -44,6 +46,7 @@ func (mgr *DEServerMGR) AddDEServer(conn *DEServer) {
 	mgr.connections = append(mgr.connections, conn)
 	conn.WatchRecv(mgr.DealDataElement)
 	conn.WatchClose(mgr.deleteConnection)
+	return nil
 }
 
 func (mgr *DEServerMGR) GetClientInfos() []*foxproxy.ClientInfo {
@@ -55,9 +58,9 @@ func (mgr *DEServerMGR) GetClientInfos() []*foxproxy.ClientInfo {
 }
 
 type MsgInfo struct {
-	Payload    []byte
-	StatusCode *foxproxy.StatusCode
-	StatusMsg  *string
+	Payload  []byte
+	ErrMsg   *string
+	CoinInfo *foxproxy.CoinInfo
 }
 
 // delete conn from connectionMGR
@@ -71,13 +74,13 @@ func (mgr *DEServerMGR) deleteConnection(conn *DEServer) {
 		if !ok || len(conns) == 0 {
 			continue
 		}
-
 		for i := 0; i < len(conns); i++ {
 			idx := len(conns) - 1 - i
 			if conns[idx].ID == conn.ID {
 				conns = append(conns[:idx], conns[idx+1:]...)
 			}
 		}
+		mgr.connInfos[info.Name][conn.ClientType] = conns
 	}
 
 	for i := 0; i < len(mgr.connections); i++ {
@@ -105,14 +108,28 @@ func (mgr *DEServerMGR) SendMsg(
 	msg *MsgInfo,
 	recvChannel chan MsgInfo,
 ) error {
-	if _, ok := mgr.connInfos[name]; !ok {
+	if msg.CoinInfo == nil {
+		coinInfo, err := regcoininfo.GetRegCoinInfo(context.Background(), name)
+		if err != nil {
+			return err
+		}
+		msg.CoinInfo = coinInfo
+	}
+
+	_name := name
+	if clientType == foxproxy.ClientType_ClientTypeSign {
+		_name = msg.CoinInfo.TempName
+	}
+
+	if _, ok := mgr.connInfos[_name]; !ok {
 		return fmt.Errorf("cannot find any sider,for %v", name)
 	}
 
-	conns, ok := mgr.connInfos[name][clientType]
+	conns, ok := mgr.connInfos[_name][clientType]
 	if !ok || len(conns) == 0 {
 		return fmt.Errorf("cannot find any sider,for %v-%v", name, clientType)
 	}
+
 	var conn *DEServer
 	if connID == nil {
 		conn = conns[time.Now().Second()%len(conns)]
@@ -179,56 +196,58 @@ func (mgr *DEServerMGR) sendMsg(
 		mgr.recvChannel.Store(*msgID, recvChannel)
 	}
 
-	if msg.StatusCode == nil {
-		msg.StatusCode = foxproxy.StatusCode_StatusCodeSuccess.Enum()
-	}
-
 	return conn.Send(&foxproxy.DataElement{
-		ConnectID:  conn.ID,
-		MsgID:      *msgID,
-		MsgType:    msgType,
-		Payload:    msg.Payload,
-		StatusCode: *msg.StatusCode,
-		StatusMsg:  msg.StatusMsg,
+		ConnectID: conn.ID,
+		MsgID:     *msgID,
+		MsgType:   msgType,
+		Payload:   msg.Payload,
+		ErrMsg:    msg.ErrMsg,
+		CoinInfo:  msg.CoinInfo,
 	})
 }
 
-func (mgr *DEServerMGR) SendAndRecv(ctx context.Context, name string, clientType foxproxy.ClientType, msgType foxproxy.MsgType, req, resp interface{}) (*foxproxy.StatusCode, error) {
-	inPayload, err := json.Marshal(req)
-	if err != nil {
-		return foxproxy.StatusCode_StatusCodeMarshalErr.Enum(), err
-	}
-
+func (mgr *DEServerMGR) SendAndRecvRaw(ctx context.Context, name string, clientType foxproxy.ClientType, msgType foxproxy.MsgType, reqPayload []byte) ([]byte, error) {
 	recvChannel := make(chan MsgInfo)
 	defer close(recvChannel)
 
-	err = mgr.SendMsg(name, clientType, msgType, nil, nil, &MsgInfo{Payload: inPayload}, recvChannel)
+	err := mgr.SendMsg(name, clientType, msgType, nil, nil, &MsgInfo{Payload: reqPayload}, recvChannel)
 	if err != nil {
-		return foxproxy.StatusCode_StatusCodeFailed.Enum(), err
+		return nil, err
 	}
 
 	var recvMsg MsgInfo
 	select {
 	case <-ctx.Done():
-		return foxproxy.StatusCode_StatusCodeFailed.Enum(), ctx.Err()
+		return nil, ctx.Err()
 	case <-time.NewTimer(time.Second * 3).C:
-		return foxproxy.StatusCode_StatusCodeFailed.Enum(), fmt.Errorf("timeout for recv response")
+		return nil, fmt.Errorf("timeout for recv response")
 	case recvMsg = <-recvChannel:
 	}
 
-	if recvMsg.StatusCode.String() != foxproxy.StatusCode_StatusCodeSuccess.String() {
-		if recvMsg.StatusMsg == nil {
-			return recvMsg.StatusCode, fmt.Errorf("")
-		}
-		return recvMsg.StatusCode, fmt.Errorf(*recvMsg.StatusMsg)
+	if recvMsg.ErrMsg != nil && *recvMsg.ErrMsg != "" {
+		return nil, fmt.Errorf(*recvMsg.ErrMsg)
 	}
 
-	err = json.Unmarshal(recvMsg.Payload, resp)
+	return recvMsg.Payload, nil
+}
+
+func (mgr *DEServerMGR) SendAndRecv(ctx context.Context, name string, clientType foxproxy.ClientType, msgType foxproxy.MsgType, req, resp interface{}) error {
+	reqPayload, err := json.Marshal(req)
 	if err != nil {
-		return foxproxy.StatusCode_StatusCodeUnmarshalErr.Enum(), err
+		return err
 	}
 
-	return foxproxy.StatusCode_StatusCodeSuccess.Enum(), nil
+	respPayload, err := mgr.SendAndRecvRaw(ctx, name, clientType, msgType, reqPayload)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(respPayload, resp)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (mgr *DEServerMGR) DealDataElement(data *foxproxy.DataElement) {
@@ -236,25 +255,26 @@ func (mgr *DEServerMGR) DealDataElement(data *foxproxy.DataElement) {
 		select {
 		case <-time.NewTimer(time.Second).C:
 		case ch.(chan MsgInfo) <- MsgInfo{
-			Payload:    data.Payload,
-			StatusCode: &data.StatusCode,
-			StatusMsg:  data.StatusMsg,
+			Payload: data.Payload,
+			ErrMsg:  data.ErrMsg,
 		}:
 		}
 	}
 
-	handler, err := GetDEHandlerMGR().GetDEHandler(data.MsgType)
+	h, err := GetDEHandlerMGR().GetDEHandler(data.MsgType)
 	if err != nil {
 		logger.Sugar().Error(err)
 		return
 	}
 
-	err = handler(data)
+	resp := h(context.Background(), data)
+	if resp == nil {
+		return
+	}
+
+	err = mgr.SendMsgWithConnID(foxproxy.MsgType_MsgTypeResponse, data.ConnectID, &data.MsgID, resp, nil)
 	if err != nil {
 		logger.Sugar().Error(err)
+		return
 	}
-}
-
-func (mgr *DEServerMGR) GetCoinInfo(name string) *foxproxy.CoinInfo {
-	return mgr.coinInfos[name]
 }

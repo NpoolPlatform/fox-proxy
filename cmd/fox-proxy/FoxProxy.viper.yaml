@@ -6,7 +6,7 @@ config:
   prometheus_port: 50002
   grpc_secure_port: 50003
   appid: "89089012783789789719823798127398"
-  serviceid: "3e82208d-93a0-47be-a383-b690d945f907"
+  serviceid: "dd04174e-c697-11ef-8a68-3b7ffd2a5bf8"
   logdir: "/var/log"
   grpc_secure_dir: "/var/certs"
   log_level: "warning"

@@ -22,16 +22,16 @@ type B struct {
 
 func TestDEHandlerMGR(t *testing.T) {
 	a := &A{Msg: "sssssssssss"}
-	testHandler := func(_ context.Context, in *A) (*B, *foxproxy.StatusCode, error) {
+	testHandler := func(_ context.Context, in *A) (*B, error) {
 		assert.Equal(t, a.Msg, in.Msg)
-		return &B{Msg: "cccc" + in.Msg, num: 122}, foxproxy.StatusCode_StatusCodeSuccess.Enum(), fmt.Errorf("")
+		return &B{Msg: "cccc" + in.Msg, num: 122}, fmt.Errorf("")
 	}
 
 	mgr := deserver.GetDEHandlerMGR()
 	mgr.RegisterDEHandler(
 		foxproxy.MsgType_MsgTypeUpdateTx,
 		new(A),
-		func(ctx context.Context, req interface{}) (interface{}, *foxproxy.StatusCode, error) {
+		func(ctx context.Context, req interface{}) (interface{}, error) {
 			return testHandler(ctx, req.(*A))
 		})
 	payload, err := json.Marshal(a)
@@ -40,6 +40,6 @@ func TestDEHandlerMGR(t *testing.T) {
 	h, err := mgr.GetDEHandler(foxproxy.MsgType_MsgTypeUpdateTx)
 	assert.Nil(t, err)
 
-	err = h(&foxproxy.DataElement{Payload: payload})
-	assert.NotNil(t, err)
+	resp := h(context.Background(), &foxproxy.DataElement{Payload: payload})
+	assert.NotNil(t, resp)
 }
