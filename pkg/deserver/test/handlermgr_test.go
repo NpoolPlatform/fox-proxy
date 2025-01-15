@@ -29,7 +29,7 @@ func TestDEHandlerMGR(t *testing.T) {
 
 	mgr := deserver.GetDEHandlerMGR()
 	mgr.RegisterDEHandler(
-		foxproxy.MsgType_MsgTypeUpdateTx,
+		foxproxy.MsgType_MsgTypeSubmitTx,
 		new(A),
 		func(ctx context.Context, req interface{}) (interface{}, error) {
 			return testHandler(ctx, req.(*A))
@@ -37,7 +37,7 @@ func TestDEHandlerMGR(t *testing.T) {
 	payload, err := json.Marshal(a)
 	assert.Nil(t, err)
 
-	h, err := mgr.GetDEHandler(foxproxy.MsgType_MsgTypeUpdateTx)
+	h, err := mgr.GetDEHandler(foxproxy.MsgType_MsgTypeSubmitTx)
 	assert.Nil(t, err)
 
 	resp := h(context.Background(), &foxproxy.DataElement{Payload: payload})

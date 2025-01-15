@@ -12,7 +12,7 @@ func TestMsgTypeRouter(t *testing.T) {
 	steps1 := MsgTypeSteps{
 		{MsgType: foxproxy.MsgType_MsgTypeDefault, ClientType: foxproxy.ClientType_ClientTypePlugin},
 		{MsgType: foxproxy.MsgType_MsgTypeEcho, ClientType: foxproxy.ClientType_ClientTypeSign},
-		{MsgType: foxproxy.MsgType_MsgTypeUpdateTx, ClientType: foxproxy.ClientType_ClientTypePlugin},
+		{MsgType: foxproxy.MsgType_MsgTypeSubmitTx, ClientType: foxproxy.ClientType_ClientTypePlugin},
 	}
 	mtR.RegisterRouter(
 		steps1,
@@ -41,7 +41,7 @@ func TestMsgTypeRouter(t *testing.T) {
 
 	steps2 := MsgTypeSteps{
 		{MsgType: foxproxy.MsgType_MsgTypeEcho, ClientType: foxproxy.ClientType_ClientTypeSign},
-		{MsgType: foxproxy.MsgType_MsgTypeUpdateTx, ClientType: foxproxy.ClientType_ClientTypePlugin},
+		{MsgType: foxproxy.MsgType_MsgTypeSubmitTx, ClientType: foxproxy.ClientType_ClientTypePlugin},
 	}
 	mtR.RegisterRouter(
 		steps2,

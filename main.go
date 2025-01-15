@@ -55,7 +55,7 @@ func main() {
 	fmt.Println(err)
 	// PrepareTestData()
 
-	// ret, err := transaction.AssignTxs(context.Background(), foxproxy.ClientType_ClientTypePlugin, []string{"A", "B"})
+	// ret, err := transaction.AssginTxs(context.Background(), foxproxy.ClientType_ClientTypePlugin, []string{"A", "B"})
 	// fmt.Println(err)
 	// fmt.Println(utils.PrettyStruct(ret))
 	err = transaction.SubmitTx(context.Background(), &foxproxy.SubmitTransaction{

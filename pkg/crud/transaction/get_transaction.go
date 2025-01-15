@@ -29,26 +29,6 @@ func getTransaction(ctx context.Context, transactionID string) (*ent.Transaction
 	tx, err := client.
 		Transaction.
 		Query().
-		Select(
-			transaction.FieldID,
-			transaction.FieldEntID,
-			transaction.FieldTransactionID,
-			transaction.FieldChainType,
-			transaction.FieldCoinType,
-			transaction.FieldClientType,
-			transaction.FieldName,
-			transaction.FieldFrom,
-			transaction.FieldTo,
-			transaction.FieldMemo,
-			transaction.FieldAmount,
-			transaction.FieldCid,
-			transaction.FieldExitCode,
-			transaction.FieldPayload,
-			transaction.FieldState,
-			transaction.FieldLockTime,
-			transaction.FieldCreatedAt,
-			transaction.FieldUpdatedAt,
-		).
 		Where(
 			transaction.TransactionIDEQ(transactionID),
 		).

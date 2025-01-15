@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"strings"
+	"sync"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
@@ -15,6 +16,8 @@ import (
 	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
 	"github.com/NpoolPlatform/message/npool/foxproxy"
 )
+
+var assginLock sync.Mutex
 
 // PullTransactions ..
 func pullTxs(ctx context.Context, cli *ent.Tx, clientType foxproxy.ClientType, names []string) ([]*ent.Transaction, error) {
@@ -66,14 +69,17 @@ func lockTxs(ctx context.Context, cli *ent.Tx, txs []*ent.Transaction) error {
 	return err
 }
 
-func AssignTxs(ctx context.Context, clientType foxproxy.ClientType, names []string) ([]*foxproxy.Transaction, error) {
+func AssginTxs(ctx context.Context, clientType foxproxy.ClientType, names []string) ([]*foxproxy.Transaction, error) {
+	assginLock.Lock()
+	defer assginLock.Unlock()
+
 	var ret []*foxproxy.Transaction
 	err := db.WithTx(ctx, func(ctx context.Context, cli *ent.Tx) error {
 		txs, err := pullTxs(ctx, cli, clientType, names)
 		if err != nil {
 			return err
 		}
-		lockTxs(ctx, cli, txs)
+		err = lockTxs(ctx, cli, txs)
 		if err != nil {
 			return err
 		}
