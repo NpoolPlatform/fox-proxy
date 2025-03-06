@@ -6,7 +6,7 @@ require (
 	entgo.io/ent v0.11.2
 	github.com/NpoolPlatform/basal-middleware v0.0.0-20240731030616-5ed3dac01fec
 	github.com/NpoolPlatform/chain-middleware v0.0.0-20240731030645-1b4ce8fcac22
-	github.com/NpoolPlatform/go-service-framework v0.0.0-20241220080921-1db852b9ce07
+	github.com/NpoolPlatform/go-service-framework v0.0.0-20250305034919-570ec430c34b
 	github.com/NpoolPlatform/libent-cruder v0.0.0-20240323085036-7679b4818ce7
 	github.com/NpoolPlatform/message v0.0.0-20241230102801-92b27c5bc52a
 	github.com/go-sql-driver/mysql v1.7.0

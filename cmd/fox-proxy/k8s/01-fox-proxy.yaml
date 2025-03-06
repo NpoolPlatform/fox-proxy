@@ -69,3 +69,19 @@ spec:
       port: 50001
   selector:
     app: fox-proxy
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fox-proxy-sgrpc
+  namespace: kube-system
+  annotations:
+    traefik.ingress.kubernetes.io/service.serversscheme: h2c
+
+spec:
+  ports:
+    - name: secure-grpc
+      port: 50003
+  selector:
+    app: fox-proxy

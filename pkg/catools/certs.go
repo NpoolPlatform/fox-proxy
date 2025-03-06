@@ -78,7 +78,8 @@ func makeCert(caCert *x509.Certificate, caKey *rsa.PrivateKey, subject *pkix.Nam
 		SerialNumber: big.NewInt(1658),
 		Subject:      *subject,
 		// IPAddresses:  []net.IP{net.IPv4(127, 0, 0, 1), net.IPv6loopback},
-		DNSNames:     []string{"localhost"},
+		// TODO: need more detail info for DNSNames
+		DNSNames:     []string{"*"},
 		NotBefore:    time.Now(),
 		NotAfter:     time.Now().AddDate(10, 0, 0),
 		SubjectKeyId: []byte{1, 2, 3, 4, 6},
