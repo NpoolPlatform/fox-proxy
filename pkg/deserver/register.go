@@ -32,7 +32,7 @@ func init() {
 	)
 
 	mgr.RegisterDEHandler(
-		foxproxy.MsgType_MsgTypeAssginPluginTxs,
+		foxproxy.MsgType_MsgTypeAssignPluginTxs,
 		&[]*foxproxy.CoinInfo{},
 		func(ctx context.Context, req interface{}) (interface{}, error) {
 			infos, ok := req.(*[]*foxproxy.CoinInfo)
@@ -43,12 +43,12 @@ func init() {
 			for _, info := range *infos {
 				names = append(names, info.Name)
 			}
-			return transaction.AssginTxs(ctx, foxproxy.ClientType_ClientTypePlugin, names)
+			return transaction.AssignTxs(ctx, foxproxy.ClientType_ClientTypePlugin, names)
 		},
 	)
 
 	mgr.RegisterDEHandler(
-		foxproxy.MsgType_MsgTypeAssginSignTxs,
+		foxproxy.MsgType_MsgTypeAssignSignTxs,
 		&[]*foxproxy.CoinInfo{},
 		func(ctx context.Context, req interface{}) (interface{}, error) {
 			infos, ok := req.(*[]*foxproxy.CoinInfo)
@@ -69,7 +69,7 @@ func init() {
 				names = append(names, info.Name)
 			}
 
-			return transaction.AssginTxs(ctx, foxproxy.ClientType_ClientTypeSign, names)
+			return transaction.AssignTxs(ctx, foxproxy.ClientType_ClientTypeSign, names)
 		},
 	)
 

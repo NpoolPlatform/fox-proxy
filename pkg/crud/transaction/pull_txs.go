@@ -17,7 +17,7 @@ import (
 	"github.com/NpoolPlatform/message/npool/foxproxy"
 )
 
-var assginLock sync.Mutex
+var assignLock sync.Mutex
 
 // PullTransactions ..
 func pullTxs(ctx context.Context, cli *ent.Tx, clientType foxproxy.ClientType, names []string) ([]*ent.Transaction, error) {
@@ -71,9 +71,9 @@ func lockTxs(ctx context.Context, cli *ent.Tx, txs []*ent.Transaction) error {
 	return err
 }
 
-func AssginTxs(ctx context.Context, clientType foxproxy.ClientType, names []string) ([]*foxproxy.Transaction, error) {
-	assginLock.Lock()
-	defer assginLock.Unlock()
+func AssignTxs(ctx context.Context, clientType foxproxy.ClientType, names []string) ([]*foxproxy.Transaction, error) {
+	assignLock.Lock()
+	defer assignLock.Unlock()
 
 	var ret []*foxproxy.Transaction
 	err := db.WithTx(ctx, func(ctx context.Context, cli *ent.Tx) error {

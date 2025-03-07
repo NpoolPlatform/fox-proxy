@@ -81,6 +81,8 @@ func EntToProto(tx *ent.Transaction) *foxproxy.Transaction {
 		State:    foxproxy.TransactionState(tx.State),
 
 		LockTime:  tx.LockTime,
+		ChainType: foxproxy.ChainType(tx.ChainType),
+		CoinType:  foxproxy.CoinType(tx.CoinType),
 		CreatedAt: tx.CreatedAt,
 		UpdatedAt: tx.UpdatedAt,
 	}

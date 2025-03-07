@@ -53,7 +53,7 @@ func GetRegCoinInfos(ctx context.Context, names []string) ([]*foxproxy.CoinInfo,
 		RegCoinInfo.
 		Query().
 		Where(
-			regcoininfo.NameIn(names...),
+			regcoininfo.TempNameIn(names...),
 		).
 		All(ctx)
 	if err != nil {
