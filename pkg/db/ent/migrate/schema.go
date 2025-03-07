@@ -48,7 +48,7 @@ var (
 		{Name: "client_type", Type: field.TypeInt32, Nullable: true, Default: 0},
 		{Name: "transaction_id", Type: field.TypeString, Unique: true},
 		{Name: "cid", Type: field.TypeString, Nullable: true, Default: ""},
-		{Name: "exit_code", Type: field.TypeInt64, Nullable: true, Default: -1},
+		{Name: "exit_code", Type: field.TypeInt64, Nullable: true, Default: 0},
 		{Name: "name", Type: field.TypeString, Nullable: true, Default: ""},
 		{Name: "from", Type: field.TypeString, Nullable: true, Default: ""},
 		{Name: "to", Type: field.TypeString, Nullable: true, Default: ""},

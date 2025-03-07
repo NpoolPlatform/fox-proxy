@@ -54,10 +54,12 @@ func pullTxs(ctx context.Context, cli *ent.Tx, clientType foxproxy.ClientType, n
 
 func lockTxs(ctx context.Context, cli *ent.Tx, txs []*ent.Transaction) error {
 	ids := []uint32{}
+	now := uint32(time.Now().Unix())
 	for _, v := range txs {
 		ids = append(ids, v.ID)
+		v.LockTime = now
 	}
-	now := uint32(time.Now().Unix())
+
 	_, err := cli.Transaction.
 		Update().
 		Where(
@@ -79,6 +81,7 @@ func AssginTxs(ctx context.Context, clientType foxproxy.ClientType, names []stri
 		if err != nil {
 			return err
 		}
+
 		err = lockTxs(ctx, cli, txs)
 		if err != nil {
 			return err
@@ -89,6 +92,7 @@ func AssginTxs(ctx context.Context, clientType foxproxy.ClientType, names []stri
 	if err != nil {
 		return nil, err
 	}
+
 	return ret, nil
 }
 
@@ -100,7 +104,6 @@ func SubmitTx(ctx context.Context, t *foxproxy.SubmitTransaction) error {
 	if err != nil {
 		return wlog.WrapError(err)
 	}
-	fmt.Println(utils.PrettyStruct(tx))
 	currentStateStep := &router.TxStateStep{
 		TxState:    foxproxy.TransactionState(tx.State),
 		ClientType: foxproxy.ClientType(tx.ClientType),

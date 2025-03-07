@@ -39,7 +39,6 @@ func init() {
 			if !ok {
 				return nil, fmt.Errorf("cannot transfer payload to req")
 			}
-
 			names := []string{}
 			for _, info := range *infos {
 				names = append(names, info.Name)

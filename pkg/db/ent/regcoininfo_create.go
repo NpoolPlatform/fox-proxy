@@ -390,7 +390,6 @@ func (rcic *RegCoinInfoCreate) createSpec() (*RegCoinInfo, *sqlgraph.CreateSpec)
 //			SetEntID(v+v).
 //		}).
 //		Exec(ctx)
-//
 func (rcic *RegCoinInfoCreate) OnConflict(opts ...sql.ConflictOption) *RegCoinInfoUpsertOne {
 	rcic.conflict = opts
 	return &RegCoinInfoUpsertOne{
@@ -404,7 +403,6 @@ func (rcic *RegCoinInfoCreate) OnConflict(opts ...sql.ConflictOption) *RegCoinIn
 //	client.RegCoinInfo.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-//
 func (rcic *RegCoinInfoCreate) OnConflictColumns(columns ...string) *RegCoinInfoUpsertOne {
 	rcic.conflict = append(rcic.conflict, sql.ConflictColumns(columns...))
 	return &RegCoinInfoUpsertOne{
@@ -616,7 +614,6 @@ func (u *RegCoinInfoUpsert) ClearDeletedAt() *RegCoinInfoUpsert {
 //			}),
 //		).
 //		Exec(ctx)
-//
 func (u *RegCoinInfoUpsertOne) UpdateNewValues() *RegCoinInfoUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
@@ -630,10 +627,9 @@ func (u *RegCoinInfoUpsertOne) UpdateNewValues() *RegCoinInfoUpsertOne {
 // Ignore sets each column to itself in case of conflict.
 // Using this option is equivalent to using:
 //
-//  client.RegCoinInfo.Create().
-//      OnConflict(sql.ResolveWithIgnore()).
-//      Exec(ctx)
-//
+//	client.RegCoinInfo.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
 func (u *RegCoinInfoUpsertOne) Ignore() *RegCoinInfoUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
 	return u
@@ -999,7 +995,6 @@ func (rcicb *RegCoinInfoCreateBulk) ExecX(ctx context.Context) {
 //			SetEntID(v+v).
 //		}).
 //		Exec(ctx)
-//
 func (rcicb *RegCoinInfoCreateBulk) OnConflict(opts ...sql.ConflictOption) *RegCoinInfoUpsertBulk {
 	rcicb.conflict = opts
 	return &RegCoinInfoUpsertBulk{
@@ -1013,7 +1008,6 @@ func (rcicb *RegCoinInfoCreateBulk) OnConflict(opts ...sql.ConflictOption) *RegC
 //	client.RegCoinInfo.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-//
 func (rcicb *RegCoinInfoCreateBulk) OnConflictColumns(columns ...string) *RegCoinInfoUpsertBulk {
 	rcicb.conflict = append(rcicb.conflict, sql.ConflictColumns(columns...))
 	return &RegCoinInfoUpsertBulk{
@@ -1038,7 +1032,6 @@ type RegCoinInfoUpsertBulk struct {
 //			}),
 //		).
 //		Exec(ctx)
-//
 func (u *RegCoinInfoUpsertBulk) UpdateNewValues() *RegCoinInfoUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
@@ -1058,7 +1051,6 @@ func (u *RegCoinInfoUpsertBulk) UpdateNewValues() *RegCoinInfoUpsertBulk {
 //	client.RegCoinInfo.Create().
 //		OnConflict(sql.ResolveWithIgnore()).
 //		Exec(ctx)
-//
 func (u *RegCoinInfoUpsertBulk) Ignore() *RegCoinInfoUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
 	return u

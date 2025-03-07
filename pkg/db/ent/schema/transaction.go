@@ -39,7 +39,7 @@ func (Transaction) Fields() []ent.Field {
 			Default(""),
 		field.Int64("exit_code").
 			Optional().
-			Default(-1),
+			Default(0),
 		field.String("name").
 			Optional().
 			Default(""),

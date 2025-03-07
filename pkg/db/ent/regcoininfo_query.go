@@ -263,7 +263,6 @@ func (rciq *RegCoinInfoQuery) Clone() *RegCoinInfoQuery {
 //		GroupBy(regcoininfo.FieldEntID).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-//
 func (rciq *RegCoinInfoQuery) GroupBy(field string, fields ...string) *RegCoinInfoGroupBy {
 	grbuild := &RegCoinInfoGroupBy{config: rciq.config}
 	grbuild.fields = append([]string{field}, fields...)
@@ -290,7 +289,6 @@ func (rciq *RegCoinInfoQuery) GroupBy(field string, fields ...string) *RegCoinIn
 //	client.RegCoinInfo.Query().
 //		Select(regcoininfo.FieldEntID).
 //		Scan(ctx, &v)
-//
 func (rciq *RegCoinInfoQuery) Select(fields ...string) *RegCoinInfoSelect {
 	rciq.fields = append(rciq.fields, fields...)
 	selbuild := &RegCoinInfoSelect{RegCoinInfoQuery: rciq}

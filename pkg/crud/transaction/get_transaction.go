@@ -80,6 +80,7 @@ func EntToProto(tx *ent.Transaction) *foxproxy.Transaction {
 		CID:      tx.Cid,
 		State:    foxproxy.TransactionState(tx.State),
 
+		LockTime:  tx.LockTime,
 		CreatedAt: tx.CreatedAt,
 		UpdatedAt: tx.UpdatedAt,
 	}
