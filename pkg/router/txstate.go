@@ -76,6 +76,9 @@ func (tss TxStateSteps) GetNextStep(txState *foxproxy.TransactionState) (*TxStat
 	if len(tss) == 0 {
 		return nil, fmt.Errorf("cannot find any tx state step")
 	}
+	if txState == nil {
+		return tss[0], nil
+	}
 	idx := 0
 	for ; idx < len(tss); idx++ {
 		if tss[idx].TxState == *txState {

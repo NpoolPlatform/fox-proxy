@@ -76,7 +76,7 @@ func init() {
 
 	mgr.RegisterDEHandler(
 		foxproxy.MsgType_MsgTypeSubmitTx,
-		&[]*foxproxy.CoinInfo{},
+		&foxproxy.SubmitTransaction{},
 		func(ctx context.Context, req interface{}) (interface{}, error) {
 			info, ok := req.(*foxproxy.SubmitTransaction)
 			if !ok {

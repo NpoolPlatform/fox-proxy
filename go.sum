@@ -53,10 +53,8 @@ github.com/NpoolPlatform/basal-middleware v0.0.0-20240731030616-5ed3dac01fec h1:
 github.com/NpoolPlatform/basal-middleware v0.0.0-20240731030616-5ed3dac01fec/go.mod h1:2vsOMsJ6aLHp6nKc/GBOv+sFydXNtqxk9y3HW7LdclI=
 github.com/NpoolPlatform/chain-middleware v0.0.0-20240731030645-1b4ce8fcac22 h1:nbIrlPHtzI0CmlgWTnFmE+vJq6cZdw6x+KZS2b8q3eI=
 github.com/NpoolPlatform/chain-middleware v0.0.0-20240731030645-1b4ce8fcac22/go.mod h1:33JYBYNHoLcxGzsndIEdjtId9OX1JWyxiGzq8KZGVT4=
-github.com/NpoolPlatform/go-service-framework v0.0.0-20241220080921-1db852b9ce07 h1:LcFwPHbF0s53unv7f+0+PnBudawHF1q2GzNfJoaV+Qw=
-github.com/NpoolPlatform/go-service-framework v0.0.0-20241220080921-1db852b9ce07/go.mod h1:8ZqSAAL4eLX/09HLWwDzQY0fMORy8nqHj3kwiUHEyS4=
-github.com/NpoolPlatform/go-service-framework v0.0.0-20250305034919-570ec430c34b h1:TzFsEHu5J0+gC4CERmLF6NPIcsbS0jC4bZlYzUkNXUc=
-github.com/NpoolPlatform/go-service-framework v0.0.0-20250305034919-570ec430c34b/go.mod h1:8ZqSAAL4eLX/09HLWwDzQY0fMORy8nqHj3kwiUHEyS4=
+github.com/NpoolPlatform/go-service-framework v0.0.0-20250306080323-8ff5046338f5 h1:FC3DT5n3OxZNTaXMx3eD8nxnS2r9J4puPAcRTFv7Y/A=
+github.com/NpoolPlatform/go-service-framework v0.0.0-20250306080323-8ff5046338f5/go.mod h1:8ZqSAAL4eLX/09HLWwDzQY0fMORy8nqHj3kwiUHEyS4=
 github.com/NpoolPlatform/libent-cruder v0.0.0-20240323085036-7679b4818ce7 h1:MFVwhO6TBiPw8t9u/oe5WzRgoPbH1XjSWF8ZuEnVN5M=
 github.com/NpoolPlatform/libent-cruder v0.0.0-20240323085036-7679b4818ce7/go.mod h1:EXCihQpRNNyWaPu1IphiZFLTyyUK/CJMZdW4My7y48Q=
 github.com/OneOfOne/xxhash v1.2.2 h1:KMrpdQIwFcEqXDklaen+P1axHaj9BSKzvpUUfnHldSE=
