@@ -106,7 +106,6 @@ func (mgr *DEServerMGR) SendMsg(
 	msgID *string,
 	connID *string,
 	msg *MsgInfo,
-	recvChannel chan MsgInfo,
 ) error {
 	if msg.CoinInfo == nil {
 		coinInfo, err := regcoininfo.GetRegCoinInfo(context.Background(), name)
@@ -145,7 +144,7 @@ func (mgr *DEServerMGR) SendMsg(
 		}
 	}
 
-	return mgr.sendMsg(msgType, msgID, msg, conn, recvChannel)
+	return mgr.sendMsg(msgType, msgID, msg, conn)
 }
 
 // if recvChannel is not nil, recv response will send to it
@@ -168,7 +167,7 @@ func (mgr *DEServerMGR) SendMsgWithConnID(
 		return fmt.Errorf("cannot find any sider,for %v", connID)
 	}
 
-	return mgr.sendMsg(msgType, msgID, msg, conn, recvChannel)
+	return mgr.sendMsg(msgType, msgID, msg, conn)
 }
 
 // if recvChannel is not nil, recv response will send to it
@@ -178,7 +177,6 @@ func (mgr *DEServerMGR) sendMsg(
 	msgID *string,
 	msg *MsgInfo,
 	conn *DEServer,
-	recvChannel chan MsgInfo,
 ) error {
 	if conn == nil {
 		return fmt.Errorf("connection is nil")
@@ -191,9 +189,6 @@ func (mgr *DEServerMGR) sendMsg(
 	if msgID == nil {
 		_msgID := uuid.NewString()
 		msgID = &_msgID
-	}
-	if recvChannel != nil {
-		mgr.recvChannel.Store(*msgID, recvChannel)
 	}
 
 	return conn.Send(&foxproxy.DataElement{
@@ -208,9 +203,13 @@ func (mgr *DEServerMGR) sendMsg(
 
 func (mgr *DEServerMGR) SendAndRecvRaw(ctx context.Context, name string, clientType foxproxy.ClientType, msgType foxproxy.MsgType, reqPayload []byte) ([]byte, error) {
 	recvChannel := make(chan MsgInfo)
-	defer close(recvChannel)
+	msgID := uuid.NewString()
+	mgr.recvChannel.Store(msgID, recvChannel)
 
-	err := mgr.SendMsg(name, clientType, msgType, nil, nil, &MsgInfo{Payload: reqPayload}, recvChannel)
+	defer close(recvChannel)
+	defer mgr.recvChannel.Delete(msgID)
+
+	err := mgr.SendMsg(name, clientType, msgType, &msgID, nil, &MsgInfo{Payload: reqPayload})
 	if err != nil {
 		return nil, err
 	}
@@ -261,13 +260,20 @@ func (mgr *DEServerMGR) DealDataElement(data *foxproxy.DataElement) {
 		}
 	}
 
+	if data.MsgType == foxproxy.MsgType_MsgTypeResponse {
+		return
+	}
+
 	h, err := GetDEHandlerMGR().GetDEHandler(data.MsgType)
 	if err != nil {
 		logger.Sugar().Error(err)
 		return
 	}
 
-	resp := h(context.Background(), data)
+	var resp *MsgInfo
+	if h != nil {
+		resp = h(context.Background(), data)
+	}
 	if resp == nil {
 		return
 	}

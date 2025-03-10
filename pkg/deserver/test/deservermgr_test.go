@@ -145,7 +145,7 @@ func TestDEServerMGR(t *testing.T) {
 	msgInfo := deserver.MsgInfo{
 		Payload: []byte("payload"),
 	}
-	err = mgr.SendMsg(clientCoinInfos[0].Name, clientType, foxproxy.MsgType_MsgTypeDefault, nil, nil, &msgInfo, nil)
+	err = mgr.SendMsg(clientCoinInfos[0].Name, clientType, foxproxy.MsgType_MsgTypeDefault, nil, nil, &msgInfo)
 	if !assert.Nil(t, err) {
 		return
 	}
