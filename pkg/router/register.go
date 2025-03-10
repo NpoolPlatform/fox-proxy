@@ -23,18 +23,24 @@ func init() {
 	}, foxproxy.MsgType_MsgTypeGetEstimateGas, nil, nil)
 
 	txsRouter := GetTxStateRouter()
-	txsRouter.RegisterRouter(TxStateSteps{
+	err := txsRouter.RegisterRouter(TxStateSteps{
 		{foxproxy.TransactionState_TransactionStatePrepare, foxproxy.ClientType_ClientTypePlugin},
 		{foxproxy.TransactionState_TransactionStateSign, foxproxy.ClientType_ClientTypeSign},
 		{foxproxy.TransactionState_TransactionStateBroadcast, foxproxy.ClientType_ClientTypePlugin},
 		{foxproxy.TransactionState_TransactionStateSync, foxproxy.ClientType_ClientTypePlugin},
 	}, nil, nil)
+	if err != nil {
+		panic(err)
+	}
 
-	txsRouter.RegisterRouter(TxStateSteps{
+	err = txsRouter.RegisterRouter(TxStateSteps{
 		{foxproxy.TransactionState_TransactionStateGetViewKey, foxproxy.ClientType_ClientTypeSign},
 		{foxproxy.TransactionState_TransactionStatePrepare, foxproxy.ClientType_ClientTypePlugin},
 		{foxproxy.TransactionState_TransactionStateSign, foxproxy.ClientType_ClientTypeSign},
 		{foxproxy.TransactionState_TransactionStateBroadcast, foxproxy.ClientType_ClientTypePlugin},
 		{foxproxy.TransactionState_TransactionStateSync, foxproxy.ClientType_ClientTypePlugin},
 	}, foxproxy.ChainType_Aleo.Enum(), nil)
+	if err != nil {
+		panic(err)
+	}
 }

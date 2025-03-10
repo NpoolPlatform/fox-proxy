@@ -21,7 +21,7 @@ var assignLock sync.Mutex
 
 // PullTransactions ..
 func pullTxs(ctx context.Context, cli *ent.Tx, clientType foxproxy.ClientType, names []string) ([]*ent.Transaction, error) {
-	querySql := fmt.Sprintf(
+	querySQL := fmt.Sprintf(
 		"select * from transactions WHERE name IN (\"%v\") AND state NOT IN (%v) group by name,`from`;",
 		strings.Join(names, "\",\""),
 		strings.Join(utils.I32ToSliceString([]int32{
@@ -34,9 +34,13 @@ func pullTxs(ctx context.Context, cli *ent.Tx, clientType foxproxy.ClientType, n
 
 	ret := []*ent.Transaction{}
 	_ret := []*ent.Transaction{}
-	rows, err := cli.Transaction.QueryContext(ctx, querySql)
+	rows, err := cli.Transaction.QueryContext(ctx, querySQL)
 	if err != nil {
 		return nil, err
+	}
+
+	if rows.Err() != nil {
+		return nil, rows.Err()
 	}
 
 	err = sql.ScanSlice(rows, &_ret)
@@ -113,13 +117,13 @@ func SubmitTx(ctx context.Context, t *foxproxy.SubmitTransaction) error {
 		txStateSteps, err := router.
 			GetTxStateRouter().
 			GetTxStateSteps(
-				(foxproxy.ChainType)(tx.ChainType).Enum(),
-				(foxproxy.CoinType)(tx.CoinType).Enum(),
+				foxproxy.ChainType(tx.ChainType).Enum(),
+				foxproxy.CoinType(tx.CoinType).Enum(),
 			)
 		if err != nil {
 			return wlog.WrapError(err)
 		}
-		currentStateStep, err = txStateSteps.GetNextStep((foxproxy.TransactionState)(tx.State).Enum())
+		currentStateStep, err = txStateSteps.GetNextStep(foxproxy.TransactionState(tx.State).Enum())
 		if err != nil {
 			return wlog.WrapError(err)
 		}
