@@ -31,24 +31,3 @@ spec:
       http: *fox_proxy_grpc_rules
     - host: proxy.xhash.ai
       http: *fox_proxy_grpc_rules
-
-    - host: proxy.procyon.vip
-      http: &fox_proxy_sgrpc_rules
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: fox-proxy-sgrpc
-                port:
-                  number: 50003
-    - host: proxy.xpool.top
-      http: *fox_proxy_sgrpc_rules
-    - host: proxy.npool.top
-      http: *fox_proxy_sgrpc_rules
-    - host: proxy.ohhash.com
-      http: *fox_proxy_sgrpc_rules
-    - host: proxy.cryptomore.io
-      http: *fox_proxy_sgrpc_rules
-    - host: proxy.xhash.ai
-      http: *fox_proxy_sgrpc_rules
