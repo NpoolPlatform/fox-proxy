@@ -125,8 +125,11 @@ func RegisterDEClient(
 }
 
 func TestDEServerMGR(t *testing.T) {
-	db.Init()
-	err := logger.Init(logger.DebugLevel, "./a.log")
+	err := db.Init()
+	if !assert.Nil(t, err) {
+		return
+	}
+	err = logger.Init(logger.DebugLevel, "./a.log")
 	if !assert.Nil(t, err) {
 		return
 	}
