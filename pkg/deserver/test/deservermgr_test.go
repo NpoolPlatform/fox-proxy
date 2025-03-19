@@ -131,9 +131,9 @@ func TestDEServerMGR(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	go MockOnServer(ctx, grpcPort)
-
+	time.Sleep(time.Second * 3)
 	cli := MockClient(ctx, grpcPort)
-
+	time.Sleep(time.Second * 3)
 	mgr := deserver.GetDEServerMGR()
 
 	infos := mgr.GetClientInfos()
