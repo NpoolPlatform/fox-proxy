@@ -9,8 +9,8 @@ import (
 	"time"
 
 	"github.com/NpoolPlatform/fox-proxy/api/stream"
-	"github.com/NpoolPlatform/fox-proxy/pkg/db"
 	"github.com/NpoolPlatform/fox-proxy/pkg/deserver"
+	testinit "github.com/NpoolPlatform/fox-proxy/pkg/test-init"
 	"github.com/NpoolPlatform/go-service-framework/pkg/logger"
 	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
 	"github.com/NpoolPlatform/message/npool/foxproxy"
@@ -125,7 +125,7 @@ func RegisterDEClient(
 }
 
 func TestDEServerMGR(t *testing.T) {
-	err := db.Init()
+	err := testinit.Init()
 	if !assert.Nil(t, err) {
 		return
 	}
