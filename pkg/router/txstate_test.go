@@ -96,5 +96,5 @@ func TestTxStateRouter(t *testing.T) {
 
 	txStateStep, err = ret.GetNextStep(foxproxy.TransactionState_TransactionStateSync.Enum())
 	assert.Nil(t, err)
-	assert.Nil(t, txStateStep)
+	assert.Equal(t, foxproxy.TransactionState_TransactionStateDone, *txStateStep)
 }
