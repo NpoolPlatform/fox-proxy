@@ -28,7 +28,6 @@ func pullTxs(ctx context.Context, cli *ent.Tx, clientType foxproxy.ClientType, n
 			int32(foxproxy.TransactionState_TransactionStateUnKnow),
 			int32(foxproxy.TransactionState_TransactionStateDone),
 			int32(foxproxy.TransactionState_TransactionStateFail),
-			int32(foxproxy.TransactionState_TransactionStateExceedTime),
 		}), ","),
 	)
 

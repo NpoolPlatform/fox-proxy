@@ -133,3 +133,75 @@ func (s *Server) GetTransaction(ctx context.Context, in *foxproxy.GetTransaction
 		Info: info,
 	}, nil
 }
+
+// GetTransactions ..
+func (s *Server) GetTransactions(ctx context.Context, in *foxproxy.GetTransactionsRequest) (out *foxproxy.GetTransactionsResponse, err error) {
+	transInfos, total, err := crud.GetTransactions(ctx, in)
+	if ent.IsNotFound(err) {
+		logger.Sugar().Info("GetTransactions no wait transaction")
+		return &foxproxy.GetTransactionsResponse{}, nil
+	}
+
+	if err != nil {
+		logger.Sugar().Errorf("GetTransactions call GetTransactions error: %v", err)
+		return &foxproxy.GetTransactionsResponse{}, status.Error(codes.Internal, "internal server error")
+	}
+
+	return &foxproxy.GetTransactionsResponse{
+		Infos: transInfos,
+		Total: total,
+	}, nil
+}
+
+func (s *Server) UpdateTransaction(ctx context.Context, in *foxproxy.UpdateTransactionRequest) (out *foxproxy.UpdateTransactionResponse, err error) {
+	if in.GetTransactionID() == "" {
+		logger.Sugar().Info("UpdateTransaction TransactionID empty")
+		return &foxproxy.UpdateTransactionResponse{},
+			status.Error(codes.InvalidArgument, "TransactionID empty")
+	}
+
+	if in.GetState() == foxproxy.TransactionState_TransactionStateUnKnow {
+		logger.Sugar().Errorw(
+			"GetTransactions no wait transaction",
+			"TransactionID", in.GetTransactionID(),
+		)
+		return &foxproxy.UpdateTransactionResponse{},
+			status.Error(codes.InvalidArgument, "TransactionState empty")
+	}
+
+	exist, err := crud.GetTransactionExist(ctx, crud.GetTransactionExistParam{
+		TransactionID: in.GetTransactionID(),
+	})
+	if err != nil {
+		logger.Sugar().Errorw(
+			"GetTransactionExist",
+			"TransactionID", in.GetTransactionID(),
+			"Error", err,
+		)
+		return &foxproxy.UpdateTransactionResponse{},
+			status.Error(codes.Internal, "internal server error")
+	}
+
+	if !exist {
+		return &foxproxy.UpdateTransactionResponse{},
+			status.Errorf(codes.NotFound, "TransactionID: %v and State: %v not found",
+				in.GetTransactionID(),
+				in.GetState(),
+			)
+	}
+
+	err = crud.UpdateTransaction(ctx, &crud.UpdateTransactionParams{
+		TransactionID: in.GetTransactionID(),
+		State:         in.GetState(),
+		Payload:       in.GetPayload(),
+		Cid:           in.GetCID(),
+		ExitCode:      in.GetExitCode(),
+	})
+	if err != nil {
+		logger.Sugar().Errorf("UpdateTransaction call error: %v", err)
+		return &foxproxy.UpdateTransactionResponse{},
+			status.Error(codes.Internal, "internal server error")
+	}
+
+	return &foxproxy.UpdateTransactionResponse{}, nil
+}

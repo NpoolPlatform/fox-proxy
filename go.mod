@@ -8,7 +8,7 @@ require (
 	github.com/NpoolPlatform/chain-middleware v0.0.0-20240731030645-1b4ce8fcac22
 	github.com/NpoolPlatform/go-service-framework v0.0.0-20250306080323-8ff5046338f5
 	github.com/NpoolPlatform/libent-cruder v0.0.0-20240323085036-7679b4818ce7
-	github.com/NpoolPlatform/message v0.0.0-20250310071221-53b1506f67c4
+	github.com/NpoolPlatform/message v0.0.0-20250319071513-29f4087f5f70
 	github.com/google/uuid v1.3.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.15.2
 	github.com/stretchr/testify v1.8.3
@@ -91,7 +91,6 @@ require (
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/spf13/viper v1.12.0 // indirect
 	github.com/subosito/gotenv v1.3.0 // indirect
-	github.com/ugorji/go/codec v1.2.12 // indirect
 	github.com/xrash/smetrics v0.0.0-20201216005158-039620a65673 // indirect
 	github.com/zclconf/go-cty v1.8.0 // indirect
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.31.0 // indirect
