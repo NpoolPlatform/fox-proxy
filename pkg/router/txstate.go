@@ -15,6 +15,15 @@ type TxStateSteps []*TxStateStep
 
 type TxStateRouter struct{ treeNode }
 
+var tsRouter *TxStateRouter
+
+func GetTxStateRouter() *TxStateRouter {
+	if tsRouter == nil {
+		tsRouter = &TxStateRouter{}
+	}
+	return tsRouter
+}
+
 func (r *TxStateRouter) RegisterRouter(
 	val TxStateSteps,
 	chainType *foxproxy.ChainType,
@@ -67,11 +76,17 @@ func (tss TxStateSteps) GetNextStep(txState *foxproxy.TransactionState) (*TxStat
 	if len(tss) == 0 {
 		return nil, fmt.Errorf("cannot find any tx state step")
 	}
+	if txState == nil {
+		return tss[0], nil
+	}
 	idx := 0
 	for ; idx < len(tss); idx++ {
 		if tss[idx].TxState == *txState {
 			if idx == len(tss)-1 {
-				return nil, nil
+				return &TxStateStep{
+					TxState:    foxproxy.TransactionState_TransactionStateDone,
+					ClientType: foxproxy.ClientType_ClientTypeDefault,
+				}, nil
 			}
 			return tss[idx+1], nil
 		}

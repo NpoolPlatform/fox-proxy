@@ -2,8 +2,6 @@ package main
 
 import (
 	"context"
-	"net/http"
-	_ "net/http/pprof"
 
 	apicli "github.com/NpoolPlatform/basal-middleware/pkg/client/api"
 	"github.com/NpoolPlatform/fox-proxy/api"
@@ -42,14 +40,11 @@ func run(ctx context.Context) error {
 	if err := db.Init(); err != nil {
 		return err
 	}
+
 	return nil
 }
 
 func shutdown(ctx context.Context) {
-	logger.Sugar().Warn("sssssssssssssssssss")
-
-	err := http.ListenAndServe("0.0.0.0:6060", nil)
-	logger.Sugar().Error(err)
 	<-ctx.Done()
 	deserver.GetDEServerMGR().CloseAll()
 	logger.Sugar().Warnw(

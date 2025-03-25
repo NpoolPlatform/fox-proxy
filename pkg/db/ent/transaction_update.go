@@ -70,89 +70,57 @@ func (tu *TransactionUpdate) ClearCoinType() *TransactionUpdate {
 	return tu
 }
 
-// SetNonce sets the "nonce" field.
-func (tu *TransactionUpdate) SetNonce(u uint64) *TransactionUpdate {
-	tu.mutation.ResetNonce()
-	tu.mutation.SetNonce(u)
+// SetChainType sets the "chain_type" field.
+func (tu *TransactionUpdate) SetChainType(i int32) *TransactionUpdate {
+	tu.mutation.ResetChainType()
+	tu.mutation.SetChainType(i)
 	return tu
 }
 
-// SetNillableNonce sets the "nonce" field if the given value is not nil.
-func (tu *TransactionUpdate) SetNillableNonce(u *uint64) *TransactionUpdate {
-	if u != nil {
-		tu.SetNonce(*u)
-	}
-	return tu
-}
-
-// AddNonce adds u to the "nonce" field.
-func (tu *TransactionUpdate) AddNonce(u int64) *TransactionUpdate {
-	tu.mutation.AddNonce(u)
-	return tu
-}
-
-// ClearNonce clears the value of the "nonce" field.
-func (tu *TransactionUpdate) ClearNonce() *TransactionUpdate {
-	tu.mutation.ClearNonce()
-	return tu
-}
-
-// SetTransactionType sets the "transaction_type" field.
-func (tu *TransactionUpdate) SetTransactionType(i int8) *TransactionUpdate {
-	tu.mutation.ResetTransactionType()
-	tu.mutation.SetTransactionType(i)
-	return tu
-}
-
-// SetNillableTransactionType sets the "transaction_type" field if the given value is not nil.
-func (tu *TransactionUpdate) SetNillableTransactionType(i *int8) *TransactionUpdate {
+// SetNillableChainType sets the "chain_type" field if the given value is not nil.
+func (tu *TransactionUpdate) SetNillableChainType(i *int32) *TransactionUpdate {
 	if i != nil {
-		tu.SetTransactionType(*i)
+		tu.SetChainType(*i)
 	}
 	return tu
 }
 
-// AddTransactionType adds i to the "transaction_type" field.
-func (tu *TransactionUpdate) AddTransactionType(i int8) *TransactionUpdate {
-	tu.mutation.AddTransactionType(i)
+// AddChainType adds i to the "chain_type" field.
+func (tu *TransactionUpdate) AddChainType(i int32) *TransactionUpdate {
+	tu.mutation.AddChainType(i)
 	return tu
 }
 
-// ClearTransactionType clears the value of the "transaction_type" field.
-func (tu *TransactionUpdate) ClearTransactionType() *TransactionUpdate {
-	tu.mutation.ClearTransactionType()
+// ClearChainType clears the value of the "chain_type" field.
+func (tu *TransactionUpdate) ClearChainType() *TransactionUpdate {
+	tu.mutation.ClearChainType()
 	return tu
 }
 
-// SetRecentBhash sets the "recent_bhash" field.
-func (tu *TransactionUpdate) SetRecentBhash(s string) *TransactionUpdate {
-	tu.mutation.SetRecentBhash(s)
+// SetClientType sets the "client_type" field.
+func (tu *TransactionUpdate) SetClientType(i int32) *TransactionUpdate {
+	tu.mutation.ResetClientType()
+	tu.mutation.SetClientType(i)
 	return tu
 }
 
-// SetNillableRecentBhash sets the "recent_bhash" field if the given value is not nil.
-func (tu *TransactionUpdate) SetNillableRecentBhash(s *string) *TransactionUpdate {
-	if s != nil {
-		tu.SetRecentBhash(*s)
+// SetNillableClientType sets the "client_type" field if the given value is not nil.
+func (tu *TransactionUpdate) SetNillableClientType(i *int32) *TransactionUpdate {
+	if i != nil {
+		tu.SetClientType(*i)
 	}
 	return tu
 }
 
-// ClearRecentBhash clears the value of the "recent_bhash" field.
-func (tu *TransactionUpdate) ClearRecentBhash() *TransactionUpdate {
-	tu.mutation.ClearRecentBhash()
+// AddClientType adds i to the "client_type" field.
+func (tu *TransactionUpdate) AddClientType(i int32) *TransactionUpdate {
+	tu.mutation.AddClientType(i)
 	return tu
 }
 
-// SetTxData sets the "tx_data" field.
-func (tu *TransactionUpdate) SetTxData(b []byte) *TransactionUpdate {
-	tu.mutation.SetTxData(b)
-	return tu
-}
-
-// ClearTxData clears the value of the "tx_data" field.
-func (tu *TransactionUpdate) ClearTxData() *TransactionUpdate {
-	tu.mutation.ClearTxData()
+// ClearClientType clears the value of the "client_type" field.
+func (tu *TransactionUpdate) ClearClientType() *TransactionUpdate {
+	tu.mutation.ClearClientType()
 	return tu
 }
 
@@ -329,29 +297,56 @@ func (tu *TransactionUpdate) ClearPayload() *TransactionUpdate {
 }
 
 // SetState sets the "state" field.
-func (tu *TransactionUpdate) SetState(u uint8) *TransactionUpdate {
+func (tu *TransactionUpdate) SetState(i int32) *TransactionUpdate {
 	tu.mutation.ResetState()
-	tu.mutation.SetState(u)
+	tu.mutation.SetState(i)
 	return tu
 }
 
 // SetNillableState sets the "state" field if the given value is not nil.
-func (tu *TransactionUpdate) SetNillableState(u *uint8) *TransactionUpdate {
-	if u != nil {
-		tu.SetState(*u)
+func (tu *TransactionUpdate) SetNillableState(i *int32) *TransactionUpdate {
+	if i != nil {
+		tu.SetState(*i)
 	}
 	return tu
 }
 
-// AddState adds u to the "state" field.
-func (tu *TransactionUpdate) AddState(u int8) *TransactionUpdate {
-	tu.mutation.AddState(u)
+// AddState adds i to the "state" field.
+func (tu *TransactionUpdate) AddState(i int32) *TransactionUpdate {
+	tu.mutation.AddState(i)
 	return tu
 }
 
 // ClearState clears the value of the "state" field.
 func (tu *TransactionUpdate) ClearState() *TransactionUpdate {
 	tu.mutation.ClearState()
+	return tu
+}
+
+// SetLockTime sets the "lock_time" field.
+func (tu *TransactionUpdate) SetLockTime(u uint32) *TransactionUpdate {
+	tu.mutation.ResetLockTime()
+	tu.mutation.SetLockTime(u)
+	return tu
+}
+
+// SetNillableLockTime sets the "lock_time" field if the given value is not nil.
+func (tu *TransactionUpdate) SetNillableLockTime(u *uint32) *TransactionUpdate {
+	if u != nil {
+		tu.SetLockTime(*u)
+	}
+	return tu
+}
+
+// AddLockTime adds u to the "lock_time" field.
+func (tu *TransactionUpdate) AddLockTime(u int32) *TransactionUpdate {
+	tu.mutation.AddLockTime(u)
+	return tu
+}
+
+// ClearLockTime clears the value of the "lock_time" field.
+func (tu *TransactionUpdate) ClearLockTime() *TransactionUpdate {
+	tu.mutation.ClearLockTime()
 	return tu
 }
 
@@ -563,70 +558,44 @@ func (tu *TransactionUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: transaction.FieldCoinType,
 		})
 	}
-	if value, ok := tu.mutation.Nonce(); ok {
+	if value, ok := tu.mutation.ChainType(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
+			Type:   field.TypeInt32,
 			Value:  value,
-			Column: transaction.FieldNonce,
+			Column: transaction.FieldChainType,
 		})
 	}
-	if value, ok := tu.mutation.AddedNonce(); ok {
+	if value, ok := tu.mutation.AddedChainType(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
+			Type:   field.TypeInt32,
 			Value:  value,
-			Column: transaction.FieldNonce,
+			Column: transaction.FieldChainType,
 		})
 	}
-	if tu.mutation.NonceCleared() {
+	if tu.mutation.ChainTypeCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Column: transaction.FieldNonce,
+			Type:   field.TypeInt32,
+			Column: transaction.FieldChainType,
 		})
 	}
-	if value, ok := tu.mutation.TransactionType(); ok {
+	if value, ok := tu.mutation.ClientType(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt8,
+			Type:   field.TypeInt32,
 			Value:  value,
-			Column: transaction.FieldTransactionType,
+			Column: transaction.FieldClientType,
 		})
 	}
-	if value, ok := tu.mutation.AddedTransactionType(); ok {
+	if value, ok := tu.mutation.AddedClientType(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt8,
+			Type:   field.TypeInt32,
 			Value:  value,
-			Column: transaction.FieldTransactionType,
+			Column: transaction.FieldClientType,
 		})
 	}
-	if tu.mutation.TransactionTypeCleared() {
+	if tu.mutation.ClientTypeCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt8,
-			Column: transaction.FieldTransactionType,
-		})
-	}
-	if value, ok := tu.mutation.RecentBhash(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: transaction.FieldRecentBhash,
-		})
-	}
-	if tu.mutation.RecentBhashCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Column: transaction.FieldRecentBhash,
-		})
-	}
-	if value, ok := tu.mutation.TxData(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeBytes,
-			Value:  value,
-			Column: transaction.FieldTxData,
-		})
-	}
-	if tu.mutation.TxDataCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeBytes,
-			Column: transaction.FieldTxData,
+			Type:   field.TypeInt32,
+			Column: transaction.FieldClientType,
 		})
 	}
 	if value, ok := tu.mutation.TransactionID(); ok {
@@ -756,22 +725,42 @@ func (tu *TransactionUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := tu.mutation.State(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint8,
+			Type:   field.TypeInt32,
 			Value:  value,
 			Column: transaction.FieldState,
 		})
 	}
 	if value, ok := tu.mutation.AddedState(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint8,
+			Type:   field.TypeInt32,
 			Value:  value,
 			Column: transaction.FieldState,
 		})
 	}
 	if tu.mutation.StateCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint8,
+			Type:   field.TypeInt32,
 			Column: transaction.FieldState,
+		})
+	}
+	if value, ok := tu.mutation.LockTime(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint32,
+			Value:  value,
+			Column: transaction.FieldLockTime,
+		})
+	}
+	if value, ok := tu.mutation.AddedLockTime(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint32,
+			Value:  value,
+			Column: transaction.FieldLockTime,
+		})
+	}
+	if tu.mutation.LockTimeCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint32,
+			Column: transaction.FieldLockTime,
 		})
 	}
 	if value, ok := tu.mutation.CreatedAt(); ok {
@@ -896,89 +885,57 @@ func (tuo *TransactionUpdateOne) ClearCoinType() *TransactionUpdateOne {
 	return tuo
 }
 
-// SetNonce sets the "nonce" field.
-func (tuo *TransactionUpdateOne) SetNonce(u uint64) *TransactionUpdateOne {
-	tuo.mutation.ResetNonce()
-	tuo.mutation.SetNonce(u)
+// SetChainType sets the "chain_type" field.
+func (tuo *TransactionUpdateOne) SetChainType(i int32) *TransactionUpdateOne {
+	tuo.mutation.ResetChainType()
+	tuo.mutation.SetChainType(i)
 	return tuo
 }
 
-// SetNillableNonce sets the "nonce" field if the given value is not nil.
-func (tuo *TransactionUpdateOne) SetNillableNonce(u *uint64) *TransactionUpdateOne {
-	if u != nil {
-		tuo.SetNonce(*u)
-	}
-	return tuo
-}
-
-// AddNonce adds u to the "nonce" field.
-func (tuo *TransactionUpdateOne) AddNonce(u int64) *TransactionUpdateOne {
-	tuo.mutation.AddNonce(u)
-	return tuo
-}
-
-// ClearNonce clears the value of the "nonce" field.
-func (tuo *TransactionUpdateOne) ClearNonce() *TransactionUpdateOne {
-	tuo.mutation.ClearNonce()
-	return tuo
-}
-
-// SetTransactionType sets the "transaction_type" field.
-func (tuo *TransactionUpdateOne) SetTransactionType(i int8) *TransactionUpdateOne {
-	tuo.mutation.ResetTransactionType()
-	tuo.mutation.SetTransactionType(i)
-	return tuo
-}
-
-// SetNillableTransactionType sets the "transaction_type" field if the given value is not nil.
-func (tuo *TransactionUpdateOne) SetNillableTransactionType(i *int8) *TransactionUpdateOne {
+// SetNillableChainType sets the "chain_type" field if the given value is not nil.
+func (tuo *TransactionUpdateOne) SetNillableChainType(i *int32) *TransactionUpdateOne {
 	if i != nil {
-		tuo.SetTransactionType(*i)
+		tuo.SetChainType(*i)
 	}
 	return tuo
 }
 
-// AddTransactionType adds i to the "transaction_type" field.
-func (tuo *TransactionUpdateOne) AddTransactionType(i int8) *TransactionUpdateOne {
-	tuo.mutation.AddTransactionType(i)
+// AddChainType adds i to the "chain_type" field.
+func (tuo *TransactionUpdateOne) AddChainType(i int32) *TransactionUpdateOne {
+	tuo.mutation.AddChainType(i)
 	return tuo
 }
 
-// ClearTransactionType clears the value of the "transaction_type" field.
-func (tuo *TransactionUpdateOne) ClearTransactionType() *TransactionUpdateOne {
-	tuo.mutation.ClearTransactionType()
+// ClearChainType clears the value of the "chain_type" field.
+func (tuo *TransactionUpdateOne) ClearChainType() *TransactionUpdateOne {
+	tuo.mutation.ClearChainType()
 	return tuo
 }
 
-// SetRecentBhash sets the "recent_bhash" field.
-func (tuo *TransactionUpdateOne) SetRecentBhash(s string) *TransactionUpdateOne {
-	tuo.mutation.SetRecentBhash(s)
+// SetClientType sets the "client_type" field.
+func (tuo *TransactionUpdateOne) SetClientType(i int32) *TransactionUpdateOne {
+	tuo.mutation.ResetClientType()
+	tuo.mutation.SetClientType(i)
 	return tuo
 }
 
-// SetNillableRecentBhash sets the "recent_bhash" field if the given value is not nil.
-func (tuo *TransactionUpdateOne) SetNillableRecentBhash(s *string) *TransactionUpdateOne {
-	if s != nil {
-		tuo.SetRecentBhash(*s)
+// SetNillableClientType sets the "client_type" field if the given value is not nil.
+func (tuo *TransactionUpdateOne) SetNillableClientType(i *int32) *TransactionUpdateOne {
+	if i != nil {
+		tuo.SetClientType(*i)
 	}
 	return tuo
 }
 
-// ClearRecentBhash clears the value of the "recent_bhash" field.
-func (tuo *TransactionUpdateOne) ClearRecentBhash() *TransactionUpdateOne {
-	tuo.mutation.ClearRecentBhash()
+// AddClientType adds i to the "client_type" field.
+func (tuo *TransactionUpdateOne) AddClientType(i int32) *TransactionUpdateOne {
+	tuo.mutation.AddClientType(i)
 	return tuo
 }
 
-// SetTxData sets the "tx_data" field.
-func (tuo *TransactionUpdateOne) SetTxData(b []byte) *TransactionUpdateOne {
-	tuo.mutation.SetTxData(b)
-	return tuo
-}
-
-// ClearTxData clears the value of the "tx_data" field.
-func (tuo *TransactionUpdateOne) ClearTxData() *TransactionUpdateOne {
-	tuo.mutation.ClearTxData()
+// ClearClientType clears the value of the "client_type" field.
+func (tuo *TransactionUpdateOne) ClearClientType() *TransactionUpdateOne {
+	tuo.mutation.ClearClientType()
 	return tuo
 }
 
@@ -1155,29 +1112,56 @@ func (tuo *TransactionUpdateOne) ClearPayload() *TransactionUpdateOne {
 }
 
 // SetState sets the "state" field.
-func (tuo *TransactionUpdateOne) SetState(u uint8) *TransactionUpdateOne {
+func (tuo *TransactionUpdateOne) SetState(i int32) *TransactionUpdateOne {
 	tuo.mutation.ResetState()
-	tuo.mutation.SetState(u)
+	tuo.mutation.SetState(i)
 	return tuo
 }
 
 // SetNillableState sets the "state" field if the given value is not nil.
-func (tuo *TransactionUpdateOne) SetNillableState(u *uint8) *TransactionUpdateOne {
-	if u != nil {
-		tuo.SetState(*u)
+func (tuo *TransactionUpdateOne) SetNillableState(i *int32) *TransactionUpdateOne {
+	if i != nil {
+		tuo.SetState(*i)
 	}
 	return tuo
 }
 
-// AddState adds u to the "state" field.
-func (tuo *TransactionUpdateOne) AddState(u int8) *TransactionUpdateOne {
-	tuo.mutation.AddState(u)
+// AddState adds i to the "state" field.
+func (tuo *TransactionUpdateOne) AddState(i int32) *TransactionUpdateOne {
+	tuo.mutation.AddState(i)
 	return tuo
 }
 
 // ClearState clears the value of the "state" field.
 func (tuo *TransactionUpdateOne) ClearState() *TransactionUpdateOne {
 	tuo.mutation.ClearState()
+	return tuo
+}
+
+// SetLockTime sets the "lock_time" field.
+func (tuo *TransactionUpdateOne) SetLockTime(u uint32) *TransactionUpdateOne {
+	tuo.mutation.ResetLockTime()
+	tuo.mutation.SetLockTime(u)
+	return tuo
+}
+
+// SetNillableLockTime sets the "lock_time" field if the given value is not nil.
+func (tuo *TransactionUpdateOne) SetNillableLockTime(u *uint32) *TransactionUpdateOne {
+	if u != nil {
+		tuo.SetLockTime(*u)
+	}
+	return tuo
+}
+
+// AddLockTime adds u to the "lock_time" field.
+func (tuo *TransactionUpdateOne) AddLockTime(u int32) *TransactionUpdateOne {
+	tuo.mutation.AddLockTime(u)
+	return tuo
+}
+
+// ClearLockTime clears the value of the "lock_time" field.
+func (tuo *TransactionUpdateOne) ClearLockTime() *TransactionUpdateOne {
+	tuo.mutation.ClearLockTime()
 	return tuo
 }
 
@@ -1419,70 +1403,44 @@ func (tuo *TransactionUpdateOne) sqlSave(ctx context.Context) (_node *Transactio
 			Column: transaction.FieldCoinType,
 		})
 	}
-	if value, ok := tuo.mutation.Nonce(); ok {
+	if value, ok := tuo.mutation.ChainType(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
+			Type:   field.TypeInt32,
 			Value:  value,
-			Column: transaction.FieldNonce,
+			Column: transaction.FieldChainType,
 		})
 	}
-	if value, ok := tuo.mutation.AddedNonce(); ok {
+	if value, ok := tuo.mutation.AddedChainType(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
+			Type:   field.TypeInt32,
 			Value:  value,
-			Column: transaction.FieldNonce,
+			Column: transaction.FieldChainType,
 		})
 	}
-	if tuo.mutation.NonceCleared() {
+	if tuo.mutation.ChainTypeCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Column: transaction.FieldNonce,
+			Type:   field.TypeInt32,
+			Column: transaction.FieldChainType,
 		})
 	}
-	if value, ok := tuo.mutation.TransactionType(); ok {
+	if value, ok := tuo.mutation.ClientType(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt8,
+			Type:   field.TypeInt32,
 			Value:  value,
-			Column: transaction.FieldTransactionType,
+			Column: transaction.FieldClientType,
 		})
 	}
-	if value, ok := tuo.mutation.AddedTransactionType(); ok {
+	if value, ok := tuo.mutation.AddedClientType(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt8,
+			Type:   field.TypeInt32,
 			Value:  value,
-			Column: transaction.FieldTransactionType,
+			Column: transaction.FieldClientType,
 		})
 	}
-	if tuo.mutation.TransactionTypeCleared() {
+	if tuo.mutation.ClientTypeCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt8,
-			Column: transaction.FieldTransactionType,
-		})
-	}
-	if value, ok := tuo.mutation.RecentBhash(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: transaction.FieldRecentBhash,
-		})
-	}
-	if tuo.mutation.RecentBhashCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Column: transaction.FieldRecentBhash,
-		})
-	}
-	if value, ok := tuo.mutation.TxData(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeBytes,
-			Value:  value,
-			Column: transaction.FieldTxData,
-		})
-	}
-	if tuo.mutation.TxDataCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeBytes,
-			Column: transaction.FieldTxData,
+			Type:   field.TypeInt32,
+			Column: transaction.FieldClientType,
 		})
 	}
 	if value, ok := tuo.mutation.TransactionID(); ok {
@@ -1612,22 +1570,42 @@ func (tuo *TransactionUpdateOne) sqlSave(ctx context.Context) (_node *Transactio
 	}
 	if value, ok := tuo.mutation.State(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint8,
+			Type:   field.TypeInt32,
 			Value:  value,
 			Column: transaction.FieldState,
 		})
 	}
 	if value, ok := tuo.mutation.AddedState(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint8,
+			Type:   field.TypeInt32,
 			Value:  value,
 			Column: transaction.FieldState,
 		})
 	}
 	if tuo.mutation.StateCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint8,
+			Type:   field.TypeInt32,
 			Column: transaction.FieldState,
+		})
+	}
+	if value, ok := tuo.mutation.LockTime(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint32,
+			Value:  value,
+			Column: transaction.FieldLockTime,
+		})
+	}
+	if value, ok := tuo.mutation.AddedLockTime(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint32,
+			Value:  value,
+			Column: transaction.FieldLockTime,
+		})
+	}
+	if tuo.mutation.LockTimeCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint32,
+			Column: transaction.FieldLockTime,
 		})
 	}
 	if value, ok := tuo.mutation.CreatedAt(); ok {

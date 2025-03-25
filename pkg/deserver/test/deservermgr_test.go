@@ -10,6 +10,7 @@ import (
 
 	"github.com/NpoolPlatform/fox-proxy/api/stream"
 	"github.com/NpoolPlatform/fox-proxy/pkg/deserver"
+	testinit "github.com/NpoolPlatform/fox-proxy/pkg/test-init"
 	"github.com/NpoolPlatform/go-service-framework/pkg/logger"
 	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
 	"github.com/NpoolPlatform/message/npool/foxproxy"
@@ -102,10 +103,9 @@ func RegisterDEClient(
 		}
 
 		err = client.Send(&foxproxy.DataElement{
-			ConnectID:  connID,
-			MsgID:      msgID,
-			Payload:    payload,
-			StatusCode: foxproxy.StatusCode_StatusCodeSuccess,
+			ConnectID: connID,
+			MsgID:     msgID,
+			Payload:   payload,
 		})
 		if err != nil {
 			return wlog.WrapError(err)
@@ -116,8 +116,8 @@ func RegisterDEClient(
 			return wlog.WrapError(err)
 		}
 
-		if data.StatusCode != foxproxy.StatusCode_StatusCodeSuccess {
-			return wlog.Errorf("failed to register to proxy, err: %v", data.StatusMsg)
+		if data.ErrMsg != nil && *data.ErrMsg != "" {
+			return wlog.Errorf("failed to register to proxy, err: %v", *data.ErrMsg)
 		}
 
 		return nil
@@ -125,16 +125,20 @@ func RegisterDEClient(
 }
 
 func TestDEServerMGR(t *testing.T) {
-	err := logger.Init(logger.DebugLevel, "./a.log")
+	err := testinit.Init()
+	if !assert.Nil(t, err) {
+		return
+	}
+	err = logger.Init(logger.DebugLevel, "./a.log")
 	if !assert.Nil(t, err) {
 		return
 	}
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	go MockOnServer(ctx, grpcPort)
-
+	time.Sleep(time.Second * 3)
 	cli := MockClient(ctx, grpcPort)
-
+	time.Sleep(time.Second * 3)
 	mgr := deserver.GetDEServerMGR()
 
 	infos := mgr.GetClientInfos()
@@ -144,10 +148,9 @@ func TestDEServerMGR(t *testing.T) {
 	clientInfo := infos[0]
 
 	msgInfo := deserver.MsgInfo{
-		Payload:    []byte("payload"),
-		StatusCode: foxproxy.StatusCode_StatusCodeMarshalErr.Enum(),
+		Payload: []byte("payload"),
 	}
-	err = mgr.SendMsg(clientCoinInfos[0].Name, clientType, foxproxy.MsgType_MsgTypeDefault, nil, nil, &msgInfo, nil)
+	err = mgr.SendMsg(clientCoinInfos[0].Name, clientType, foxproxy.MsgType_MsgTypeDefault, nil, nil, &msgInfo)
 	if !assert.Nil(t, err) {
 		return
 	}
@@ -158,7 +161,6 @@ func TestDEServerMGR(t *testing.T) {
 	}
 	assert.Equal(t, dataEle.ConnectID, clientInfo.ID)
 	assert.Equal(t, dataEle.Payload, msgInfo.Payload)
-	assert.Equal(t, dataEle.StatusCode, *msgInfo.StatusCode)
 
 	payload := []byte{0, 1, 2, 3}
 	msgID := uuid.NewString()

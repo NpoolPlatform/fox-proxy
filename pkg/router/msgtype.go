@@ -12,19 +12,27 @@ type MsgTypeSteps []struct {
 }
 type MsgTypeRouter struct{ treeNode }
 
+var mtRouter *MsgTypeRouter
+
+func GetMsgTypeRouter() *MsgTypeRouter {
+	if mtRouter == nil {
+		mtRouter = &MsgTypeRouter{}
+	}
+	return mtRouter
+}
+
 func (r *MsgTypeRouter) RegisterRouter(
 	val MsgTypeSteps,
 	msgType foxproxy.MsgType,
 	chainType *foxproxy.ChainType,
 	coinType *foxproxy.CoinType,
-) error {
+) {
 	pathList, err := r.getPathList(msgType, chainType, coinType)
 	if err != nil {
-		return err
+		panic(err)
 	}
 
 	r.registerRouter(val, pathList...)
-	return nil
 }
 
 func (r *MsgTypeRouter) GetMsgTypeSteps(

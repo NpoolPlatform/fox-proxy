@@ -31,32 +31,28 @@ func RegisterDEServer(stream foxproxy.FoxProxyStream_DEStreamServer) (*DEServer,
 			return nil, wlog.WrapError(err)
 		}
 
-		statusCode := foxproxy.StatusCode_StatusCodeSuccess
 		statusMsg := ""
 
 		connInfo := &foxproxy.ClientInfo{}
 		err = json.Unmarshal(data.Payload, connInfo)
 		if err != nil {
-			statusCode = foxproxy.StatusCode_StatusCodeFailed
 			statusMsg = err.Error()
 		}
 
-		if statusCode == foxproxy.StatusCode_StatusCodeSuccess && data.ConnectID != connInfo.ID {
-			statusCode = foxproxy.StatusCode_StatusCodeFailed
-			statusMsg = err.Error()
+		if err == nil && data.ConnectID != connInfo.ID {
+			statusMsg = "connectid dont match"
 		}
 
 		err = stream.Send(&foxproxy.DataElement{
-			ConnectID:  data.ConnectID,
-			MsgID:      data.MsgID,
-			StatusCode: statusCode,
-			StatusMsg:  &statusMsg,
+			ConnectID: data.ConnectID,
+			MsgID:     data.MsgID,
+			ErrMsg:    &statusMsg,
 		})
 		if err != nil {
 			return nil, wlog.WrapError(err)
 		}
 
-		if statusCode != foxproxy.StatusCode_StatusCodeSuccess {
+		if statusMsg != "" {
 			return nil, wlog.Errorf(statusMsg)
 		}
 

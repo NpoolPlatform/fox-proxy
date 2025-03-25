@@ -8,25 +8,55 @@ import (
 )
 
 var (
+	// RegCoinInfosColumns holds the columns for the "reg_coin_infos" table.
+	RegCoinInfosColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUint32, Increment: true},
+		{Name: "ent_id", Type: field.TypeUUID, Unique: true},
+		{Name: "chain_type", Type: field.TypeInt32, Nullable: true, Default: 0},
+		{Name: "coin_type", Type: field.TypeInt32, Nullable: true, Default: 0},
+		{Name: "temp_name", Type: field.TypeString, Nullable: true, Default: ""},
+		{Name: "name", Type: field.TypeString, Unique: true},
+		{Name: "env", Type: field.TypeString, Nullable: true, Default: ""},
+		{Name: "created_at", Type: field.TypeUint32, Nullable: true},
+		{Name: "updated_at", Type: field.TypeUint32, Nullable: true},
+		{Name: "deleted_at", Type: field.TypeUint32, Nullable: true},
+	}
+	// RegCoinInfosTable holds the schema information for the "reg_coin_infos" table.
+	RegCoinInfosTable = &schema.Table{
+		Name:       "reg_coin_infos",
+		Columns:    RegCoinInfosColumns,
+		PrimaryKey: []*schema.Column{RegCoinInfosColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "regcoininfo_ent_id",
+				Unique:  true,
+				Columns: []*schema.Column{RegCoinInfosColumns[1]},
+			},
+			{
+				Name:    "regcoininfo_name",
+				Unique:  false,
+				Columns: []*schema.Column{RegCoinInfosColumns[5]},
+			},
+		},
+	}
 	// TransactionsColumns holds the columns for the "transactions" table.
 	TransactionsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUint32, Increment: true},
 		{Name: "ent_id", Type: field.TypeUUID, Unique: true},
 		{Name: "coin_type", Type: field.TypeInt32, Nullable: true, Default: 0},
-		{Name: "nonce", Type: field.TypeUint64, Nullable: true, Default: 0},
-		{Name: "transaction_type", Type: field.TypeInt8, Nullable: true, Default: 0},
-		{Name: "recent_bhash", Type: field.TypeString, Nullable: true, Default: ""},
-		{Name: "tx_data", Type: field.TypeBytes, Nullable: true},
+		{Name: "chain_type", Type: field.TypeInt32, Nullable: true, Default: 0},
+		{Name: "client_type", Type: field.TypeInt32, Nullable: true, Default: 0},
 		{Name: "transaction_id", Type: field.TypeString, Unique: true},
 		{Name: "cid", Type: field.TypeString, Nullable: true, Default: ""},
-		{Name: "exit_code", Type: field.TypeInt64, Nullable: true, Default: -1},
+		{Name: "exit_code", Type: field.TypeInt64, Nullable: true, Default: 0},
 		{Name: "name", Type: field.TypeString, Nullable: true, Default: ""},
 		{Name: "from", Type: field.TypeString, Nullable: true, Default: ""},
 		{Name: "to", Type: field.TypeString, Nullable: true, Default: ""},
 		{Name: "memo", Type: field.TypeString, Nullable: true, Default: ""},
 		{Name: "amount", Type: field.TypeUint64, Nullable: true, Default: 0},
 		{Name: "payload", Type: field.TypeBytes, Nullable: true, Size: 4294967295},
-		{Name: "state", Type: field.TypeUint8, Nullable: true, Default: 0},
+		{Name: "state", Type: field.TypeInt32, Nullable: true, Default: 0},
+		{Name: "lock_time", Type: field.TypeUint32, Nullable: true, Default: 0},
 		{Name: "created_at", Type: field.TypeUint32, Nullable: true},
 		{Name: "updated_at", Type: field.TypeUint32, Nullable: true},
 		{Name: "deleted_at", Type: field.TypeUint32, Nullable: true},
@@ -46,6 +76,7 @@ var (
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
+		RegCoinInfosTable,
 		TransactionsTable,
 	}
 )

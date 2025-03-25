@@ -50,51 +50,31 @@ func (tc *TransactionCreate) SetNillableCoinType(i *int32) *TransactionCreate {
 	return tc
 }
 
-// SetNonce sets the "nonce" field.
-func (tc *TransactionCreate) SetNonce(u uint64) *TransactionCreate {
-	tc.mutation.SetNonce(u)
+// SetChainType sets the "chain_type" field.
+func (tc *TransactionCreate) SetChainType(i int32) *TransactionCreate {
+	tc.mutation.SetChainType(i)
 	return tc
 }
 
-// SetNillableNonce sets the "nonce" field if the given value is not nil.
-func (tc *TransactionCreate) SetNillableNonce(u *uint64) *TransactionCreate {
-	if u != nil {
-		tc.SetNonce(*u)
-	}
-	return tc
-}
-
-// SetTransactionType sets the "transaction_type" field.
-func (tc *TransactionCreate) SetTransactionType(i int8) *TransactionCreate {
-	tc.mutation.SetTransactionType(i)
-	return tc
-}
-
-// SetNillableTransactionType sets the "transaction_type" field if the given value is not nil.
-func (tc *TransactionCreate) SetNillableTransactionType(i *int8) *TransactionCreate {
+// SetNillableChainType sets the "chain_type" field if the given value is not nil.
+func (tc *TransactionCreate) SetNillableChainType(i *int32) *TransactionCreate {
 	if i != nil {
-		tc.SetTransactionType(*i)
+		tc.SetChainType(*i)
 	}
 	return tc
 }
 
-// SetRecentBhash sets the "recent_bhash" field.
-func (tc *TransactionCreate) SetRecentBhash(s string) *TransactionCreate {
-	tc.mutation.SetRecentBhash(s)
+// SetClientType sets the "client_type" field.
+func (tc *TransactionCreate) SetClientType(i int32) *TransactionCreate {
+	tc.mutation.SetClientType(i)
 	return tc
 }
 
-// SetNillableRecentBhash sets the "recent_bhash" field if the given value is not nil.
-func (tc *TransactionCreate) SetNillableRecentBhash(s *string) *TransactionCreate {
-	if s != nil {
-		tc.SetRecentBhash(*s)
+// SetNillableClientType sets the "client_type" field if the given value is not nil.
+func (tc *TransactionCreate) SetNillableClientType(i *int32) *TransactionCreate {
+	if i != nil {
+		tc.SetClientType(*i)
 	}
-	return tc
-}
-
-// SetTxData sets the "tx_data" field.
-func (tc *TransactionCreate) SetTxData(b []byte) *TransactionCreate {
-	tc.mutation.SetTxData(b)
 	return tc
 }
 
@@ -209,15 +189,29 @@ func (tc *TransactionCreate) SetPayload(b []byte) *TransactionCreate {
 }
 
 // SetState sets the "state" field.
-func (tc *TransactionCreate) SetState(u uint8) *TransactionCreate {
-	tc.mutation.SetState(u)
+func (tc *TransactionCreate) SetState(i int32) *TransactionCreate {
+	tc.mutation.SetState(i)
 	return tc
 }
 
 // SetNillableState sets the "state" field if the given value is not nil.
-func (tc *TransactionCreate) SetNillableState(u *uint8) *TransactionCreate {
+func (tc *TransactionCreate) SetNillableState(i *int32) *TransactionCreate {
+	if i != nil {
+		tc.SetState(*i)
+	}
+	return tc
+}
+
+// SetLockTime sets the "lock_time" field.
+func (tc *TransactionCreate) SetLockTime(u uint32) *TransactionCreate {
+	tc.mutation.SetLockTime(u)
+	return tc
+}
+
+// SetNillableLockTime sets the "lock_time" field if the given value is not nil.
+func (tc *TransactionCreate) SetNillableLockTime(u *uint32) *TransactionCreate {
 	if u != nil {
-		tc.SetState(*u)
+		tc.SetLockTime(*u)
 	}
 	return tc
 }
@@ -355,21 +349,13 @@ func (tc *TransactionCreate) defaults() {
 		v := transaction.DefaultCoinType
 		tc.mutation.SetCoinType(v)
 	}
-	if _, ok := tc.mutation.Nonce(); !ok {
-		v := transaction.DefaultNonce
-		tc.mutation.SetNonce(v)
+	if _, ok := tc.mutation.ChainType(); !ok {
+		v := transaction.DefaultChainType
+		tc.mutation.SetChainType(v)
 	}
-	if _, ok := tc.mutation.TransactionType(); !ok {
-		v := transaction.DefaultTransactionType
-		tc.mutation.SetTransactionType(v)
-	}
-	if _, ok := tc.mutation.RecentBhash(); !ok {
-		v := transaction.DefaultRecentBhash
-		tc.mutation.SetRecentBhash(v)
-	}
-	if _, ok := tc.mutation.TxData(); !ok {
-		v := transaction.DefaultTxData
-		tc.mutation.SetTxData(v)
+	if _, ok := tc.mutation.ClientType(); !ok {
+		v := transaction.DefaultClientType
+		tc.mutation.SetClientType(v)
 	}
 	if _, ok := tc.mutation.Cid(); !ok {
 		v := transaction.DefaultCid
@@ -406,6 +392,10 @@ func (tc *TransactionCreate) defaults() {
 	if _, ok := tc.mutation.State(); !ok {
 		v := transaction.DefaultState
 		tc.mutation.SetState(v)
+	}
+	if _, ok := tc.mutation.LockTime(); !ok {
+		v := transaction.DefaultLockTime
+		tc.mutation.SetLockTime(v)
 	}
 	if _, ok := tc.mutation.CreatedAt(); !ok {
 		v := transaction.DefaultCreatedAt()
@@ -484,37 +474,21 @@ func (tc *TransactionCreate) createSpec() (*Transaction, *sqlgraph.CreateSpec) {
 		})
 		_node.CoinType = value
 	}
-	if value, ok := tc.mutation.Nonce(); ok {
+	if value, ok := tc.mutation.ChainType(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
+			Type:   field.TypeInt32,
 			Value:  value,
-			Column: transaction.FieldNonce,
+			Column: transaction.FieldChainType,
 		})
-		_node.Nonce = value
+		_node.ChainType = value
 	}
-	if value, ok := tc.mutation.TransactionType(); ok {
+	if value, ok := tc.mutation.ClientType(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt8,
+			Type:   field.TypeInt32,
 			Value:  value,
-			Column: transaction.FieldTransactionType,
+			Column: transaction.FieldClientType,
 		})
-		_node.TransactionType = value
-	}
-	if value, ok := tc.mutation.RecentBhash(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: transaction.FieldRecentBhash,
-		})
-		_node.RecentBhash = value
-	}
-	if value, ok := tc.mutation.TxData(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeBytes,
-			Value:  value,
-			Column: transaction.FieldTxData,
-		})
-		_node.TxData = value
+		_node.ClientType = value
 	}
 	if value, ok := tc.mutation.TransactionID(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -590,11 +564,19 @@ func (tc *TransactionCreate) createSpec() (*Transaction, *sqlgraph.CreateSpec) {
 	}
 	if value, ok := tc.mutation.State(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint8,
+			Type:   field.TypeInt32,
 			Value:  value,
 			Column: transaction.FieldState,
 		})
 		_node.State = value
+	}
+	if value, ok := tc.mutation.LockTime(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint32,
+			Value:  value,
+			Column: transaction.FieldLockTime,
+		})
+		_node.LockTime = value
 	}
 	if value, ok := tc.mutation.CreatedAt(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -639,7 +621,6 @@ func (tc *TransactionCreate) createSpec() (*Transaction, *sqlgraph.CreateSpec) {
 //			SetEntID(v+v).
 //		}).
 //		Exec(ctx)
-//
 func (tc *TransactionCreate) OnConflict(opts ...sql.ConflictOption) *TransactionUpsertOne {
 	tc.conflict = opts
 	return &TransactionUpsertOne{
@@ -653,7 +634,6 @@ func (tc *TransactionCreate) OnConflict(opts ...sql.ConflictOption) *Transaction
 //	client.Transaction.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-//
 func (tc *TransactionCreate) OnConflictColumns(columns ...string) *TransactionUpsertOne {
 	tc.conflict = append(tc.conflict, sql.ConflictColumns(columns...))
 	return &TransactionUpsertOne{
@@ -710,87 +690,51 @@ func (u *TransactionUpsert) ClearCoinType() *TransactionUpsert {
 	return u
 }
 
-// SetNonce sets the "nonce" field.
-func (u *TransactionUpsert) SetNonce(v uint64) *TransactionUpsert {
-	u.Set(transaction.FieldNonce, v)
+// SetChainType sets the "chain_type" field.
+func (u *TransactionUpsert) SetChainType(v int32) *TransactionUpsert {
+	u.Set(transaction.FieldChainType, v)
 	return u
 }
 
-// UpdateNonce sets the "nonce" field to the value that was provided on create.
-func (u *TransactionUpsert) UpdateNonce() *TransactionUpsert {
-	u.SetExcluded(transaction.FieldNonce)
+// UpdateChainType sets the "chain_type" field to the value that was provided on create.
+func (u *TransactionUpsert) UpdateChainType() *TransactionUpsert {
+	u.SetExcluded(transaction.FieldChainType)
 	return u
 }
 
-// AddNonce adds v to the "nonce" field.
-func (u *TransactionUpsert) AddNonce(v uint64) *TransactionUpsert {
-	u.Add(transaction.FieldNonce, v)
+// AddChainType adds v to the "chain_type" field.
+func (u *TransactionUpsert) AddChainType(v int32) *TransactionUpsert {
+	u.Add(transaction.FieldChainType, v)
 	return u
 }
 
-// ClearNonce clears the value of the "nonce" field.
-func (u *TransactionUpsert) ClearNonce() *TransactionUpsert {
-	u.SetNull(transaction.FieldNonce)
+// ClearChainType clears the value of the "chain_type" field.
+func (u *TransactionUpsert) ClearChainType() *TransactionUpsert {
+	u.SetNull(transaction.FieldChainType)
 	return u
 }
 
-// SetTransactionType sets the "transaction_type" field.
-func (u *TransactionUpsert) SetTransactionType(v int8) *TransactionUpsert {
-	u.Set(transaction.FieldTransactionType, v)
+// SetClientType sets the "client_type" field.
+func (u *TransactionUpsert) SetClientType(v int32) *TransactionUpsert {
+	u.Set(transaction.FieldClientType, v)
 	return u
 }
 
-// UpdateTransactionType sets the "transaction_type" field to the value that was provided on create.
-func (u *TransactionUpsert) UpdateTransactionType() *TransactionUpsert {
-	u.SetExcluded(transaction.FieldTransactionType)
+// UpdateClientType sets the "client_type" field to the value that was provided on create.
+func (u *TransactionUpsert) UpdateClientType() *TransactionUpsert {
+	u.SetExcluded(transaction.FieldClientType)
 	return u
 }
 
-// AddTransactionType adds v to the "transaction_type" field.
-func (u *TransactionUpsert) AddTransactionType(v int8) *TransactionUpsert {
-	u.Add(transaction.FieldTransactionType, v)
+// AddClientType adds v to the "client_type" field.
+func (u *TransactionUpsert) AddClientType(v int32) *TransactionUpsert {
+	u.Add(transaction.FieldClientType, v)
 	return u
 }
 
-// ClearTransactionType clears the value of the "transaction_type" field.
-func (u *TransactionUpsert) ClearTransactionType() *TransactionUpsert {
-	u.SetNull(transaction.FieldTransactionType)
-	return u
-}
-
-// SetRecentBhash sets the "recent_bhash" field.
-func (u *TransactionUpsert) SetRecentBhash(v string) *TransactionUpsert {
-	u.Set(transaction.FieldRecentBhash, v)
-	return u
-}
-
-// UpdateRecentBhash sets the "recent_bhash" field to the value that was provided on create.
-func (u *TransactionUpsert) UpdateRecentBhash() *TransactionUpsert {
-	u.SetExcluded(transaction.FieldRecentBhash)
-	return u
-}
-
-// ClearRecentBhash clears the value of the "recent_bhash" field.
-func (u *TransactionUpsert) ClearRecentBhash() *TransactionUpsert {
-	u.SetNull(transaction.FieldRecentBhash)
-	return u
-}
-
-// SetTxData sets the "tx_data" field.
-func (u *TransactionUpsert) SetTxData(v []byte) *TransactionUpsert {
-	u.Set(transaction.FieldTxData, v)
-	return u
-}
-
-// UpdateTxData sets the "tx_data" field to the value that was provided on create.
-func (u *TransactionUpsert) UpdateTxData() *TransactionUpsert {
-	u.SetExcluded(transaction.FieldTxData)
-	return u
-}
-
-// ClearTxData clears the value of the "tx_data" field.
-func (u *TransactionUpsert) ClearTxData() *TransactionUpsert {
-	u.SetNull(transaction.FieldTxData)
+// ClearClientType clears the value of the "client_type" field.
+func (u *TransactionUpsert) ClearClientType() *TransactionUpsert {
+	u.SetNull(transaction.FieldClientType)
 	return u
 }
 
@@ -963,7 +907,7 @@ func (u *TransactionUpsert) ClearPayload() *TransactionUpsert {
 }
 
 // SetState sets the "state" field.
-func (u *TransactionUpsert) SetState(v uint8) *TransactionUpsert {
+func (u *TransactionUpsert) SetState(v int32) *TransactionUpsert {
 	u.Set(transaction.FieldState, v)
 	return u
 }
@@ -975,7 +919,7 @@ func (u *TransactionUpsert) UpdateState() *TransactionUpsert {
 }
 
 // AddState adds v to the "state" field.
-func (u *TransactionUpsert) AddState(v uint8) *TransactionUpsert {
+func (u *TransactionUpsert) AddState(v int32) *TransactionUpsert {
 	u.Add(transaction.FieldState, v)
 	return u
 }
@@ -983,6 +927,30 @@ func (u *TransactionUpsert) AddState(v uint8) *TransactionUpsert {
 // ClearState clears the value of the "state" field.
 func (u *TransactionUpsert) ClearState() *TransactionUpsert {
 	u.SetNull(transaction.FieldState)
+	return u
+}
+
+// SetLockTime sets the "lock_time" field.
+func (u *TransactionUpsert) SetLockTime(v uint32) *TransactionUpsert {
+	u.Set(transaction.FieldLockTime, v)
+	return u
+}
+
+// UpdateLockTime sets the "lock_time" field to the value that was provided on create.
+func (u *TransactionUpsert) UpdateLockTime() *TransactionUpsert {
+	u.SetExcluded(transaction.FieldLockTime)
+	return u
+}
+
+// AddLockTime adds v to the "lock_time" field.
+func (u *TransactionUpsert) AddLockTime(v uint32) *TransactionUpsert {
+	u.Add(transaction.FieldLockTime, v)
+	return u
+}
+
+// ClearLockTime clears the value of the "lock_time" field.
+func (u *TransactionUpsert) ClearLockTime() *TransactionUpsert {
+	u.SetNull(transaction.FieldLockTime)
 	return u
 }
 
@@ -1069,7 +1037,6 @@ func (u *TransactionUpsert) ClearDeletedAt() *TransactionUpsert {
 //			}),
 //		).
 //		Exec(ctx)
-//
 func (u *TransactionUpsertOne) UpdateNewValues() *TransactionUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
@@ -1083,10 +1050,9 @@ func (u *TransactionUpsertOne) UpdateNewValues() *TransactionUpsertOne {
 // Ignore sets each column to itself in case of conflict.
 // Using this option is equivalent to using:
 //
-//  client.Transaction.Create().
-//      OnConflict(sql.ResolveWithIgnore()).
-//      Exec(ctx)
-//
+//	client.Transaction.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
 func (u *TransactionUpsertOne) Ignore() *TransactionUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
 	return u
@@ -1150,101 +1116,59 @@ func (u *TransactionUpsertOne) ClearCoinType() *TransactionUpsertOne {
 	})
 }
 
-// SetNonce sets the "nonce" field.
-func (u *TransactionUpsertOne) SetNonce(v uint64) *TransactionUpsertOne {
+// SetChainType sets the "chain_type" field.
+func (u *TransactionUpsertOne) SetChainType(v int32) *TransactionUpsertOne {
 	return u.Update(func(s *TransactionUpsert) {
-		s.SetNonce(v)
+		s.SetChainType(v)
 	})
 }
 
-// AddNonce adds v to the "nonce" field.
-func (u *TransactionUpsertOne) AddNonce(v uint64) *TransactionUpsertOne {
+// AddChainType adds v to the "chain_type" field.
+func (u *TransactionUpsertOne) AddChainType(v int32) *TransactionUpsertOne {
 	return u.Update(func(s *TransactionUpsert) {
-		s.AddNonce(v)
+		s.AddChainType(v)
 	})
 }
 
-// UpdateNonce sets the "nonce" field to the value that was provided on create.
-func (u *TransactionUpsertOne) UpdateNonce() *TransactionUpsertOne {
+// UpdateChainType sets the "chain_type" field to the value that was provided on create.
+func (u *TransactionUpsertOne) UpdateChainType() *TransactionUpsertOne {
 	return u.Update(func(s *TransactionUpsert) {
-		s.UpdateNonce()
+		s.UpdateChainType()
 	})
 }
 
-// ClearNonce clears the value of the "nonce" field.
-func (u *TransactionUpsertOne) ClearNonce() *TransactionUpsertOne {
+// ClearChainType clears the value of the "chain_type" field.
+func (u *TransactionUpsertOne) ClearChainType() *TransactionUpsertOne {
 	return u.Update(func(s *TransactionUpsert) {
-		s.ClearNonce()
+		s.ClearChainType()
 	})
 }
 
-// SetTransactionType sets the "transaction_type" field.
-func (u *TransactionUpsertOne) SetTransactionType(v int8) *TransactionUpsertOne {
+// SetClientType sets the "client_type" field.
+func (u *TransactionUpsertOne) SetClientType(v int32) *TransactionUpsertOne {
 	return u.Update(func(s *TransactionUpsert) {
-		s.SetTransactionType(v)
+		s.SetClientType(v)
 	})
 }
 
-// AddTransactionType adds v to the "transaction_type" field.
-func (u *TransactionUpsertOne) AddTransactionType(v int8) *TransactionUpsertOne {
+// AddClientType adds v to the "client_type" field.
+func (u *TransactionUpsertOne) AddClientType(v int32) *TransactionUpsertOne {
 	return u.Update(func(s *TransactionUpsert) {
-		s.AddTransactionType(v)
+		s.AddClientType(v)
 	})
 }
 
-// UpdateTransactionType sets the "transaction_type" field to the value that was provided on create.
-func (u *TransactionUpsertOne) UpdateTransactionType() *TransactionUpsertOne {
+// UpdateClientType sets the "client_type" field to the value that was provided on create.
+func (u *TransactionUpsertOne) UpdateClientType() *TransactionUpsertOne {
 	return u.Update(func(s *TransactionUpsert) {
-		s.UpdateTransactionType()
+		s.UpdateClientType()
 	})
 }
 
-// ClearTransactionType clears the value of the "transaction_type" field.
-func (u *TransactionUpsertOne) ClearTransactionType() *TransactionUpsertOne {
+// ClearClientType clears the value of the "client_type" field.
+func (u *TransactionUpsertOne) ClearClientType() *TransactionUpsertOne {
 	return u.Update(func(s *TransactionUpsert) {
-		s.ClearTransactionType()
-	})
-}
-
-// SetRecentBhash sets the "recent_bhash" field.
-func (u *TransactionUpsertOne) SetRecentBhash(v string) *TransactionUpsertOne {
-	return u.Update(func(s *TransactionUpsert) {
-		s.SetRecentBhash(v)
-	})
-}
-
-// UpdateRecentBhash sets the "recent_bhash" field to the value that was provided on create.
-func (u *TransactionUpsertOne) UpdateRecentBhash() *TransactionUpsertOne {
-	return u.Update(func(s *TransactionUpsert) {
-		s.UpdateRecentBhash()
-	})
-}
-
-// ClearRecentBhash clears the value of the "recent_bhash" field.
-func (u *TransactionUpsertOne) ClearRecentBhash() *TransactionUpsertOne {
-	return u.Update(func(s *TransactionUpsert) {
-		s.ClearRecentBhash()
-	})
-}
-
-// SetTxData sets the "tx_data" field.
-func (u *TransactionUpsertOne) SetTxData(v []byte) *TransactionUpsertOne {
-	return u.Update(func(s *TransactionUpsert) {
-		s.SetTxData(v)
-	})
-}
-
-// UpdateTxData sets the "tx_data" field to the value that was provided on create.
-func (u *TransactionUpsertOne) UpdateTxData() *TransactionUpsertOne {
-	return u.Update(func(s *TransactionUpsert) {
-		s.UpdateTxData()
-	})
-}
-
-// ClearTxData clears the value of the "tx_data" field.
-func (u *TransactionUpsertOne) ClearTxData() *TransactionUpsertOne {
-	return u.Update(func(s *TransactionUpsert) {
-		s.ClearTxData()
+		s.ClearClientType()
 	})
 }
 
@@ -1445,14 +1369,14 @@ func (u *TransactionUpsertOne) ClearPayload() *TransactionUpsertOne {
 }
 
 // SetState sets the "state" field.
-func (u *TransactionUpsertOne) SetState(v uint8) *TransactionUpsertOne {
+func (u *TransactionUpsertOne) SetState(v int32) *TransactionUpsertOne {
 	return u.Update(func(s *TransactionUpsert) {
 		s.SetState(v)
 	})
 }
 
 // AddState adds v to the "state" field.
-func (u *TransactionUpsertOne) AddState(v uint8) *TransactionUpsertOne {
+func (u *TransactionUpsertOne) AddState(v int32) *TransactionUpsertOne {
 	return u.Update(func(s *TransactionUpsert) {
 		s.AddState(v)
 	})
@@ -1469,6 +1393,34 @@ func (u *TransactionUpsertOne) UpdateState() *TransactionUpsertOne {
 func (u *TransactionUpsertOne) ClearState() *TransactionUpsertOne {
 	return u.Update(func(s *TransactionUpsert) {
 		s.ClearState()
+	})
+}
+
+// SetLockTime sets the "lock_time" field.
+func (u *TransactionUpsertOne) SetLockTime(v uint32) *TransactionUpsertOne {
+	return u.Update(func(s *TransactionUpsert) {
+		s.SetLockTime(v)
+	})
+}
+
+// AddLockTime adds v to the "lock_time" field.
+func (u *TransactionUpsertOne) AddLockTime(v uint32) *TransactionUpsertOne {
+	return u.Update(func(s *TransactionUpsert) {
+		s.AddLockTime(v)
+	})
+}
+
+// UpdateLockTime sets the "lock_time" field to the value that was provided on create.
+func (u *TransactionUpsertOne) UpdateLockTime() *TransactionUpsertOne {
+	return u.Update(func(s *TransactionUpsert) {
+		s.UpdateLockTime()
+	})
+}
+
+// ClearLockTime clears the value of the "lock_time" field.
+func (u *TransactionUpsertOne) ClearLockTime() *TransactionUpsertOne {
+	return u.Update(func(s *TransactionUpsert) {
+		s.ClearLockTime()
 	})
 }
 
@@ -1690,7 +1642,6 @@ func (tcb *TransactionCreateBulk) ExecX(ctx context.Context) {
 //			SetEntID(v+v).
 //		}).
 //		Exec(ctx)
-//
 func (tcb *TransactionCreateBulk) OnConflict(opts ...sql.ConflictOption) *TransactionUpsertBulk {
 	tcb.conflict = opts
 	return &TransactionUpsertBulk{
@@ -1704,7 +1655,6 @@ func (tcb *TransactionCreateBulk) OnConflict(opts ...sql.ConflictOption) *Transa
 //	client.Transaction.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-//
 func (tcb *TransactionCreateBulk) OnConflictColumns(columns ...string) *TransactionUpsertBulk {
 	tcb.conflict = append(tcb.conflict, sql.ConflictColumns(columns...))
 	return &TransactionUpsertBulk{
@@ -1729,7 +1679,6 @@ type TransactionUpsertBulk struct {
 //			}),
 //		).
 //		Exec(ctx)
-//
 func (u *TransactionUpsertBulk) UpdateNewValues() *TransactionUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
@@ -1749,7 +1698,6 @@ func (u *TransactionUpsertBulk) UpdateNewValues() *TransactionUpsertBulk {
 //	client.Transaction.Create().
 //		OnConflict(sql.ResolveWithIgnore()).
 //		Exec(ctx)
-//
 func (u *TransactionUpsertBulk) Ignore() *TransactionUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
 	return u
@@ -1813,101 +1761,59 @@ func (u *TransactionUpsertBulk) ClearCoinType() *TransactionUpsertBulk {
 	})
 }
 
-// SetNonce sets the "nonce" field.
-func (u *TransactionUpsertBulk) SetNonce(v uint64) *TransactionUpsertBulk {
+// SetChainType sets the "chain_type" field.
+func (u *TransactionUpsertBulk) SetChainType(v int32) *TransactionUpsertBulk {
 	return u.Update(func(s *TransactionUpsert) {
-		s.SetNonce(v)
+		s.SetChainType(v)
 	})
 }
 
-// AddNonce adds v to the "nonce" field.
-func (u *TransactionUpsertBulk) AddNonce(v uint64) *TransactionUpsertBulk {
+// AddChainType adds v to the "chain_type" field.
+func (u *TransactionUpsertBulk) AddChainType(v int32) *TransactionUpsertBulk {
 	return u.Update(func(s *TransactionUpsert) {
-		s.AddNonce(v)
+		s.AddChainType(v)
 	})
 }
 
-// UpdateNonce sets the "nonce" field to the value that was provided on create.
-func (u *TransactionUpsertBulk) UpdateNonce() *TransactionUpsertBulk {
+// UpdateChainType sets the "chain_type" field to the value that was provided on create.
+func (u *TransactionUpsertBulk) UpdateChainType() *TransactionUpsertBulk {
 	return u.Update(func(s *TransactionUpsert) {
-		s.UpdateNonce()
+		s.UpdateChainType()
 	})
 }
 
-// ClearNonce clears the value of the "nonce" field.
-func (u *TransactionUpsertBulk) ClearNonce() *TransactionUpsertBulk {
+// ClearChainType clears the value of the "chain_type" field.
+func (u *TransactionUpsertBulk) ClearChainType() *TransactionUpsertBulk {
 	return u.Update(func(s *TransactionUpsert) {
-		s.ClearNonce()
+		s.ClearChainType()
 	})
 }
 
-// SetTransactionType sets the "transaction_type" field.
-func (u *TransactionUpsertBulk) SetTransactionType(v int8) *TransactionUpsertBulk {
+// SetClientType sets the "client_type" field.
+func (u *TransactionUpsertBulk) SetClientType(v int32) *TransactionUpsertBulk {
 	return u.Update(func(s *TransactionUpsert) {
-		s.SetTransactionType(v)
+		s.SetClientType(v)
 	})
 }
 
-// AddTransactionType adds v to the "transaction_type" field.
-func (u *TransactionUpsertBulk) AddTransactionType(v int8) *TransactionUpsertBulk {
+// AddClientType adds v to the "client_type" field.
+func (u *TransactionUpsertBulk) AddClientType(v int32) *TransactionUpsertBulk {
 	return u.Update(func(s *TransactionUpsert) {
-		s.AddTransactionType(v)
+		s.AddClientType(v)
 	})
 }
 
-// UpdateTransactionType sets the "transaction_type" field to the value that was provided on create.
-func (u *TransactionUpsertBulk) UpdateTransactionType() *TransactionUpsertBulk {
+// UpdateClientType sets the "client_type" field to the value that was provided on create.
+func (u *TransactionUpsertBulk) UpdateClientType() *TransactionUpsertBulk {
 	return u.Update(func(s *TransactionUpsert) {
-		s.UpdateTransactionType()
+		s.UpdateClientType()
 	})
 }
 
-// ClearTransactionType clears the value of the "transaction_type" field.
-func (u *TransactionUpsertBulk) ClearTransactionType() *TransactionUpsertBulk {
+// ClearClientType clears the value of the "client_type" field.
+func (u *TransactionUpsertBulk) ClearClientType() *TransactionUpsertBulk {
 	return u.Update(func(s *TransactionUpsert) {
-		s.ClearTransactionType()
-	})
-}
-
-// SetRecentBhash sets the "recent_bhash" field.
-func (u *TransactionUpsertBulk) SetRecentBhash(v string) *TransactionUpsertBulk {
-	return u.Update(func(s *TransactionUpsert) {
-		s.SetRecentBhash(v)
-	})
-}
-
-// UpdateRecentBhash sets the "recent_bhash" field to the value that was provided on create.
-func (u *TransactionUpsertBulk) UpdateRecentBhash() *TransactionUpsertBulk {
-	return u.Update(func(s *TransactionUpsert) {
-		s.UpdateRecentBhash()
-	})
-}
-
-// ClearRecentBhash clears the value of the "recent_bhash" field.
-func (u *TransactionUpsertBulk) ClearRecentBhash() *TransactionUpsertBulk {
-	return u.Update(func(s *TransactionUpsert) {
-		s.ClearRecentBhash()
-	})
-}
-
-// SetTxData sets the "tx_data" field.
-func (u *TransactionUpsertBulk) SetTxData(v []byte) *TransactionUpsertBulk {
-	return u.Update(func(s *TransactionUpsert) {
-		s.SetTxData(v)
-	})
-}
-
-// UpdateTxData sets the "tx_data" field to the value that was provided on create.
-func (u *TransactionUpsertBulk) UpdateTxData() *TransactionUpsertBulk {
-	return u.Update(func(s *TransactionUpsert) {
-		s.UpdateTxData()
-	})
-}
-
-// ClearTxData clears the value of the "tx_data" field.
-func (u *TransactionUpsertBulk) ClearTxData() *TransactionUpsertBulk {
-	return u.Update(func(s *TransactionUpsert) {
-		s.ClearTxData()
+		s.ClearClientType()
 	})
 }
 
@@ -2108,14 +2014,14 @@ func (u *TransactionUpsertBulk) ClearPayload() *TransactionUpsertBulk {
 }
 
 // SetState sets the "state" field.
-func (u *TransactionUpsertBulk) SetState(v uint8) *TransactionUpsertBulk {
+func (u *TransactionUpsertBulk) SetState(v int32) *TransactionUpsertBulk {
 	return u.Update(func(s *TransactionUpsert) {
 		s.SetState(v)
 	})
 }
 
 // AddState adds v to the "state" field.
-func (u *TransactionUpsertBulk) AddState(v uint8) *TransactionUpsertBulk {
+func (u *TransactionUpsertBulk) AddState(v int32) *TransactionUpsertBulk {
 	return u.Update(func(s *TransactionUpsert) {
 		s.AddState(v)
 	})
@@ -2132,6 +2038,34 @@ func (u *TransactionUpsertBulk) UpdateState() *TransactionUpsertBulk {
 func (u *TransactionUpsertBulk) ClearState() *TransactionUpsertBulk {
 	return u.Update(func(s *TransactionUpsert) {
 		s.ClearState()
+	})
+}
+
+// SetLockTime sets the "lock_time" field.
+func (u *TransactionUpsertBulk) SetLockTime(v uint32) *TransactionUpsertBulk {
+	return u.Update(func(s *TransactionUpsert) {
+		s.SetLockTime(v)
+	})
+}
+
+// AddLockTime adds v to the "lock_time" field.
+func (u *TransactionUpsertBulk) AddLockTime(v uint32) *TransactionUpsertBulk {
+	return u.Update(func(s *TransactionUpsert) {
+		s.AddLockTime(v)
+	})
+}
+
+// UpdateLockTime sets the "lock_time" field to the value that was provided on create.
+func (u *TransactionUpsertBulk) UpdateLockTime() *TransactionUpsertBulk {
+	return u.Update(func(s *TransactionUpsert) {
+		s.UpdateLockTime()
+	})
+}
+
+// ClearLockTime clears the value of the "lock_time" field.
+func (u *TransactionUpsertBulk) ClearLockTime() *TransactionUpsertBulk {
+	return u.Update(func(s *TransactionUpsert) {
+		s.ClearLockTime()
 	})
 }
 

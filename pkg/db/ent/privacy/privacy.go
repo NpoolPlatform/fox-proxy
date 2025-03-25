@@ -150,6 +150,30 @@ func DenyMutationOperationRule(op ent.Op) MutationRule {
 	return OnMutationOperation(rule, op)
 }
 
+// The RegCoinInfoQueryRuleFunc type is an adapter to allow the use of ordinary
+// functions as a query rule.
+type RegCoinInfoQueryRuleFunc func(context.Context, *ent.RegCoinInfoQuery) error
+
+// EvalQuery return f(ctx, q).
+func (f RegCoinInfoQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.RegCoinInfoQuery); ok {
+		return f(ctx, q)
+	}
+	return Denyf("ent/privacy: unexpected query type %T, expect *ent.RegCoinInfoQuery", q)
+}
+
+// The RegCoinInfoMutationRuleFunc type is an adapter to allow the use of ordinary
+// functions as a mutation rule.
+type RegCoinInfoMutationRuleFunc func(context.Context, *ent.RegCoinInfoMutation) error
+
+// EvalMutation calls f(ctx, m).
+func (f RegCoinInfoMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
+	if m, ok := m.(*ent.RegCoinInfoMutation); ok {
+		return f(ctx, m)
+	}
+	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.RegCoinInfoMutation", m)
+}
+
 // The TransactionQueryRuleFunc type is an adapter to allow the use of ordinary
 // functions as a query rule.
 type TransactionQueryRuleFunc func(context.Context, *ent.TransactionQuery) error
@@ -209,6 +233,8 @@ var _ QueryMutationRule = FilterFunc(nil)
 
 func queryFilter(q ent.Query) (Filter, error) {
 	switch q := q.(type) {
+	case *ent.RegCoinInfoQuery:
+		return q.Filter(), nil
 	case *ent.TransactionQuery:
 		return q.Filter(), nil
 	default:
@@ -218,6 +244,8 @@ func queryFilter(q ent.Query) (Filter, error) {
 
 func mutationFilter(m ent.Mutation) (Filter, error) {
 	switch m := m.(type) {
+	case *ent.RegCoinInfoMutation:
+		return m.Filter(), nil
 	case *ent.TransactionMutation:
 		return m.Filter(), nil
 	default:
